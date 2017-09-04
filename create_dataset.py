@@ -1,6 +1,7 @@
 #!/usr-bin/env - python
 
 from couchbase.bucket import Bucket
+import couchbase
 import uuid
 import datetime
 
@@ -13,13 +14,13 @@ LIST_DOC="david.all_the_products"
 
 
 PRODUCTS = [
-{ "name": "cheese", "description": "Smelly pong", "price": 1.00,"category": "dairy", "image": "picture.jpg"},
-{ "name": "wine", "description": "Smelly pong", "price": 1.00,"category": "dairy", "image": "picture.jpg"},
-{ "name": "ham", "description": "Smelly pong", "price": 1.00,"category": "dairy", "image": "picture.jpg"},
-{ "name": "eggs", "description": "Smelly pong", "price": 1.00,"category": "dairy", "image": "picture.jpg"},
-{ "name": "sausages", "description": "Smelly pong", "price": 1.00,"category": "dairy", "image": "picture.jpg"},
-{ "name": "bacon", "description": "Smelly pong", "price": 1.00,"category": "dairy", "image": "picture.jpg"},
-{ "name": "crisps", "description": "Smelly pong", "price": 1.00,"category": "dairy", "image": "picture.jpg"}]
+{ "name": "eggs", "description": "Smelly pong", "price": 1.00,"category": "dairy", "image": "picture.jpg", "stock": 100},
+{ "name": "cheese", "description": "Smelly pong", "price": 1.00,"category": "dairy", "image": "picture.jpg","stock": 100},
+{ "name": "wine", "description": "Smelly pong", "price": 1.00,"category": "dairy", "image": "picture.jpg", "stock": 100},
+{ "name": "ham", "description": "Smelly pong", "price": 1.00,"category": "dairy", "image": "picture.jpg", "stock": 100},
+{ "name": "sausages", "description": "Smelly pong", "price": 1.00,"category": "dairy", "image": "picture.jpg", "stock": 100},
+{ "name": "bacon", "description": "Smelly pong", "price": 1.00,"category": "dairy", "image": "picture.jpg", "stock": 100},
+{ "name": "crisps", "description": "Smelly pong", "price": 1.00,"category": "dairy", "image": "picture.jpg", "stock": 100}]
 	
    
 # {
@@ -38,16 +39,23 @@ list_doc = {"type": "product-list", "owner": "david", "name": "big fat shopping 
 def add_products():
     SDK_CLIENT.upsert(LIST_DOC, list_doc)
 
-
+    i = 12000
     for product in PRODUCTS:
-        product_id = "product_" + product['name'] 
+        product_id = "product:" + product['name'] 
         product['type'] = "product"
-        product['quantity'] = 100
         product['complete'] = False
-        product['createdAt'] = str(datetime.datetime.now())
+        # product['createdAt'] = str(datetime.datetime.now())
+        product['createdAt'] = i
+        i+=1
         product['product'] = product['name'] 
         product['productList'] = {"id": LIST_DOC, "owner": "david"}
         SDK_CLIENT.upsert(product_id, product)
+
+        # img_filename="./img/"+product['name']+".png"
+        # with open(img_filename, "rb") as image_file:
+        #     f = image_file.read()
+        #     image_bytes = bytearray(f)
+        #     SDK_CLIENT.upsert("img:"+product['name'], image_bytes,  format=couchbase.FMT_BYTES)
 
 
 add_products()
