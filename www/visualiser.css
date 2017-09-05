@@ -56,15 +56,6 @@ hr {
     /*background-color: rgba(255,255,190,1);*/
 }
 
-.flip img {
-    width: 100%;
-    height: auto;
-}
-.flip .back {
-    background: #2184cd;
-    color: #fff;
-    text-align: center;
-}
 
 .node-visualiser {
   width: 170px;
@@ -92,6 +83,13 @@ hr {
 ;
 }
 
+.shop-item{
+height: 150px;
+ background-repeat: no-repeat;
+  background-size: contain;
+    background-position: center;  
+/*  background-origin: content-box;
+*/}
 .orange-gradient {
   background: rgb(235,73,113);
   background: -moz-linear-gradient(left, rgba(235,73,113,1) 1%, rgba(252,156,12,1) 99%);

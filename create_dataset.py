@@ -22,7 +22,39 @@ PRODUCTS = [
 { "name": "bacon", "description": "Smelly pong", "price": 1.00,"category": "dairy", "image": "picture.jpg", "stock": 100},
 { "name": "crisps", "description": "Smelly pong", "price": 1.00,"category": "dairy", "image": "picture.jpg", "stock": 100}]
 	
-   
+# fruit    
+organges
+apples
+strawberries
+pineapples
+bananas
+
+bread
+eggs
+milk
+cheese
+butter
+
+crisps
+chocolate
+carambars
+cookie
+bonbons
+
+# drinks
+beer
+red wine
+champagne
+water
+whisky
+
+#meat
+sausages
+bacon
+ham
+burgers
+fish fingers
+
 # {
 #   "complete": false,
 #   "createdAt": 1504112965508,
@@ -33,6 +65,11 @@ PRODUCTS = [
 #   },
 #   "type": "task"
 # }
+
+def do_queries():
+    for row in SDK_CLIENT.n1ql_query('SELECT  name,stock FROM charlie WHERE type == "product" ORDER BY stock DESC LIMIT 5'):
+        print row
+
 
 list_doc = {"type": "product-list", "owner": "david", "name": "big fat shopping list"}
 
@@ -59,3 +96,4 @@ def add_products():
 
 
 add_products()
+do_queries()
