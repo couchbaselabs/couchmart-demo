@@ -6,6 +6,8 @@ import tornado.websocket
 import time,random
 from tornado.ioloop import PeriodicCallback
 
+import cb_status
+
 IMAGE_LIST=["apples.png", "bonbons.png", "carambar.png", "cookie.png", "ham.png", "red_wine.png", "water.png", 
 "bacon.png", "bread.png", "champagne.png", "crisps.png", "milk.png", "sausages.png", "whisky.png", "bananas.png", 
 "burger.png", "cheese.png", "eggs.png", "oranges.png", "beer.png", "butter.png", "chocolate.png", "fish_fingers.png",
@@ -26,7 +28,7 @@ class CBStatusWebSocket(tornado.websocket.WebSocketHandler):
       socket_list.append(self)
       self.red = 255
       print("WebSocket opened")
-      self.callback = tornado.ioloop.PeriodicCallback(self.change_colour,1000)
+      self.callback = tornado.ioloop.PeriodicCallback(self.getNodeStatus,5000)
       self.callback.start()
 
   def on_message(self, message):
@@ -35,6 +37,11 @@ class CBStatusWebSocket(tornado.websocket.WebSocketHandler):
   def on_close(self):
     print("WebSocket closed")
     self.callback.stop()
+
+  def getNodeStatus(self):
+    resp = cb_status.getNodeStatus()
+    msg = {"nodes": resp}
+    self.write_message(msg)
 
   def change_colour(self):
     self.red = random.randint(0,255)
@@ -83,6 +90,7 @@ def make_app():
     ])
 
 if __name__ == "__main__":
+  print "Running at http://localhost:8888"
   app = make_app()
   app.listen(8888)
   tornado.ioloop.IOLoop.current().start()

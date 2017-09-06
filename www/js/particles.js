@@ -1,7 +1,7 @@
 var c = document.getElementById("activity");
 var ctx = c.getContext("2d");
 
-
+var LIVE_PARTICLES=1;
 
 window.requestAnimFrame =
     window.requestAnimationFrame ||
@@ -13,18 +13,18 @@ window.requestAnimFrame =
         window.setTimeout(callback, 1000 / 30);
 };
 
-NUM_CIRCLES=50;
+MAX_PARTICLES=1000
 MIN_DECAY_RATE = 0.005;
 MAX_DECAY_RATE = 0.010;
 MIN_SPEED=0.1
 MAX_SPEED = 4
 MIN_SIZE = 5
-MAX_SIZE = 20
+MAX_SIZE = 15
 
 particles = []
 
-palette = [{"red": 255, "green": 0, "blue": 0},
-           {"red": 0, "green": 255, "blue": 0},
+palette = [{"red": 235, "green": 73, "blue": 113},
+           {"red": 0, "green": 185, "blue": 190},
            {"red": 0, "green": 0, "blue": 255},
            {"red": 255, "green": 0, "blue": 255}]
 
@@ -38,6 +38,7 @@ var Particle = function(index){
   this.red = palette[col_index].red;
   this.green = palette[col_index].green;
   this.blue = palette[col_index].blue;
+  this.id = index;
 
 
   var xdir = 0.5-Math.random();
@@ -86,8 +87,8 @@ var Particle = function(index){
 
   
 function drawCircles(){  
-  ctx.clearRect(0, 0, 600,400);
-  for (i=0; i< NUM_CIRCLES;i++)
+  ctx.clearRect(0, 0, 800,400);
+  for (i=0; i< LIVE_PARTICLES;i++)
   {    
    particles[i].update();
    particles[i].draw();
@@ -99,7 +100,7 @@ function loop() {
     requestAnimFrame(loop);
 }
 
-for (i=0; i< NUM_CIRCLES;i++)
+for (i=0; i< MAX_PARTICLES;i++)
 {    
  particles[i] = new Particle(i);
 }

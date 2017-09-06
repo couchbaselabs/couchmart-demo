@@ -11,29 +11,23 @@ window.onload = function BackgroundSocket(){
        ws.onmessage = function (evt) 
        { 
           var msg = JSON.parse(evt.data);
-//                  document.body.style.background = received_msg;
-      console.log("received: "+msg)
-      for (var key in msg) {
-        if (msg.hasOwnProperty(key)) {
-          console.log(key + " -> " + msg[key]);
-          var c = document.getElementById(key);
-          var ctx = c.getContext("2d");
-          ctx.fillStyle=msg[key];
-          ctx.fillRect(20,20,160,60);
-        }
-      }
+          LIVE_PARTICLES = msg['nodes'][0]['ops'] + msg['nodes'][1]['ops'] + msg['nodes'][2]['ops'];
+          if (msg['nodes'][2]['status'] == "broken"){
+            $("#node3").css({"background-color" : "red"});
+          }
+        console.log("received: "+msg)
+  
      };
         
-               ws.onclose = function()
-               { 
-                  // websocket is closed.
-                  alert("Connection is closed..."); 
-               };
-            }
-            
-            else
-            {
-               // The browser doesn't support WebSocket
-               alert("WebSocket NOT supported by your Browser!");
-            }
-         }
+     ws.onclose = function()
+     { 
+        // websocket is closed.
+        alert("Connection is closed..."); 
+     };
+    }
+    else
+    {
+       // The browser doesn't support WebSocket
+       alert("WebSocket NOT supported by your Browser!");
+    }
+ }
