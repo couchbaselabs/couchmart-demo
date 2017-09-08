@@ -6,7 +6,7 @@ import uuid
 import datetime
 
 BUCKET_NAME = 'charlie'
-SDK_CLIENT = Bucket('couchbase://dhaikney-server-1/{}'.format(BUCKET_NAME), username='charlie', password='password')
+SDK_CLIENT = Bucket('couchbase://10.142.170.101/{}'.format(BUCKET_NAME), username='charlie', password='password')
 SDK_CLIENT.timeout = 15
 
 # LIST_DOC="david.3501d7e0-9057-4c74-8de0-259ac8af09ee"
@@ -14,46 +14,38 @@ LIST_DOC="david.all_the_products"
 
 
 PRODUCTS = [
-{ "name": "eggs", "description": "Smelly pong", "price": 1.00,"category": "dairy", "image": "picture.jpg", "stock": 100},
-{ "name": "cheese", "description": "Smelly pong", "price": 1.00,"category": "dairy", "image": "picture.jpg","stock": 100},
-{ "name": "wine", "description": "Smelly pong", "price": 1.00,"category": "dairy", "image": "picture.jpg", "stock": 100},
-{ "name": "ham", "description": "Smelly pong", "price": 1.00,"category": "dairy", "image": "picture.jpg", "stock": 100},
-{ "name": "sausages", "description": "Smelly pong", "price": 1.00,"category": "dairy", "image": "picture.jpg", "stock": 100},
-{ "name": "bacon", "description": "Smelly pong", "price": 1.00,"category": "dairy", "image": "picture.jpg", "stock": 100},
-{ "name": "crisps", "description": "Smelly pong", "price": 1.00,"category": "dairy", "image": "picture.jpg", "stock": 100}]
-	
-# fruit    
-organges
-apples
-strawberries
-pineapples
-bananas
+{ "name": "fish fingers", "description": "Only the best at the captain's table", "price": 1.00,"category": "meat", "image": "finsh_fingers.png", "stock": 100},
+{ "name": "burger", "description": "Mmmm. That IS a tasty burger", "price": 1.00,"category": "meat", "image": "burger.png","stock": 100},
+{ "name": "ham", "description": "Du jambon", "price": 1.00,"category": "dairy", "image": "ham.png", "stock": 100},
+{ "name": "bacon", "description": "Smashing in a butty", "price": 1.00,"category": "meat", "image": "bacon.png", "stock": 100},
+{ "name": "sausages", "description": "A string of bangers", "price": 1.00,"category": "meat", "image": "sausages.png", "stock": 100},
+{ "name": "whisky", "description": "A wee dram", "price": 1.00,"category": "drinks", "image": "whisky.png", "stock": 100},
+{ "name": "water", "description": "h20", "price": 1.00,"category": "drinks", "image": "water.png", "stock": 100},
+{ "name": "champagne", "description": "Lovely bubbly", "price": 1.00,"category": "drinks", "image": "champagne.png", "stock": 100},
+{ "name": "red wine", "description": "Vin Rouge", "price": 1.00,"category": "drinks", "image": "red_wine.png", "stock": 100},
+{ "name": "beer", "description": "amber nectar", "price": 1.00,"category": "drinks", "image": "beer.png", "stock": 100},
+{ "name": "bonbons", "description": "What's French for....?", "price": 1.00,"category": "snacks", "image": "bonbons.png", "stock": 100},
+{ "name": "cookie", "description": "chocloate chip", "price": 1.00,"category": "dairy", "image": "cookie", "stock": 100},
+{ "name": "carambars", "description": "Eat Your Sweet!", "price": 1.00,"category": "snacks", "image": "carambars.png", "stock": 100},
+{ "name": "chocolate", "description": "milk, dark or white", "price": 1.00,"category": "snacks", "image": "chocolate.png", "stock": 100},
+{ "name": "crisps", "description": "A flavour for everyone", "price": 1.00,"category": "snacks", "image": "crisps.png", "stock": 100},
+{ "name": "butter", "description": "Put on a good spread", "price": 1.00,"category": "basics", "image": "butter.png", "stock": 100},
+{ "name": "cheese", "description": "Smelly pong", "price": 1.00,"category": "basics", "image": "cheese.png", "stock": 100},
+{ "name": "milk", "description": "No sense crying over this", "price": 1.00,"category": "basics", "image": "milk.png", "stock": 100},
+{ "name": "eggs", "description": "Don't put all these in one basket", "price": 1.00,"category": "basics", "image": "eggs.png", "stock": 100},
+{ "name": "bread", "description": "The best thing since sliced...", "price": 1.00,"category": "basics", "image": "bread.png", "stock": 100},
+{ "name": "bananas", "description": "You'll go crazy for these bananas", "price": 1.00,"category": "fruit", "image": "bananas.png", "stock": 100},
+{ "name": "pineapples", "description": "Totally tropical taste", "price": 1.00,"category": "fruit", "image": "pineapple.png", "stock": 100},
+{ "name": "strawberries", "description": "Go well with cream at Wimbledon", "price": 1.00,"category": "fruit", "image": "strawberries", "stock": 100},
+{ "name": "apples", "description": "Granny smiths and golden delicious", "price": 1.00,"category": "fruit", "image": "apples.png", "stock": 100},
+{ "name": "oranges", "description": "Not the only fruit", "price": 1.00,"category": "fruit", "image": "oranges.png", "stock": 100}]
 
-bread
-eggs
-milk
-cheese
-butter
 
-crisps
-chocolate
-carambars
-cookie
-bonbons
 
-# drinks
-beer
-red wine
-champagne
-water
-whisky
 
-#meat
-sausages
-bacon
-ham
-burgers
-fish fingers
+
+
+
 
 # {
 #   "complete": false,
