@@ -15,6 +15,7 @@
 
 img {
     max-width:100%;
+    max-height:60px;
 }
 
 .col-product {
@@ -39,7 +40,7 @@ img {
     transition: all 0.3s;
     white-space: normal;
     word-wrap: break-word;
-    max-width:100%
+    max-width:100%;
 }
 
 .green-bg {
@@ -130,7 +131,7 @@ img {
     text-transform: capitalize;
     background: #ffffff;
     cursor: pointer;
-    padding: 17px 30px 13px;
+    padding: 17px 30px 13px 30px;
     display: inline-block;
     letter-spacing: -0.025em;
     outline: none;
@@ -218,6 +219,8 @@ body {
 
 .masthead-brand {
   margin-bottom: 0;
+    padding-top: 20px;
+    padding-bottom: 20px;
 }
 
 .nav-masthead .nav-link {
@@ -304,6 +307,6 @@ body {
   .masthead,
   .mastfoot,
   .cover-container {
-    width: 42rem;
+    width: 62rem;
   }
 }

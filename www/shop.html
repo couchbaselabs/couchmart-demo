@@ -24,19 +24,11 @@
 
         <div class="cover-container">
 
-            <div class="masthead clearfix">
-                <div class="inner">
-                    <h3 class="masthead-brand">Couchmart</h3>
-                    <nav class="nav nav-masthead">
-                        <a class="nav-link active" href="#">Home</a>
-                        <a class="nav-link" href="#">Features</a>
-                        <a class="nav-link" href="#">Contact</a>
-                    </nav>
-                </div>
-            </div>
-
             <div class="inner cover">
                 <div class="container">
+                    <div class="row">
+                        <h3 class="masthead-brand">Couchmart</h3>
+                    </div>
                     <div class="row">
                         <div class="col align-self-center">
                             <div class="input-group input-group-lg">
@@ -48,14 +40,14 @@
                         <div class="row">
                             {% for item in items.itervalues() %}
                             <div class="col-md-3 col-sm-4 col-xs-6 col-product">
-                                <button class="btn btn-primary btn-product {{ random.choice(['blue', 'lightblue', 'purple', 'red', 'green'])}}-bg" type="button" data-toggle="button" value="{{ item.key }}" title="{{ item.value['description'] }}">{{ item.value['name'] }}<br><img src="img/sausages.png"></button>
+                                <button class="btn btn-primary btn-product {{ random.choice(['blue', 'lightblue', 'purple', 'red', 'green'])}}-bg" type="button" data-toggle="button" value="{{ item.key }}" title="{{ item.value['description'] }}">{{ item.value['name'] }}<br><img src="img/{{item.value['image']}}"></button>
                             </div>
                             {% end %}
 
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row" style="padding-bottom:20px;">
                     <div class="col align-self-center">
                         <input class="btn btn-primary submit-btn" type="button" value="Submit">
                     </div>
