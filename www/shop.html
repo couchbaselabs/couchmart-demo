@@ -27,7 +27,7 @@
             <div class="inner cover">
                 <div class="container">
                     <div class="row">
-                        <h3 class="masthead-brand">Couchmart</h3>
+                        <a href="/shop"><h3 class="masthead-brand">Couchmart</h3></a>
                     </div>
                     <div class="row">
                         <div class="col align-self-center">
@@ -39,7 +39,7 @@
                     <div class="products">
                         <div class="row">
                             {% for item in items.itervalues() %}
-                            <div class="col-md-3 col-sm-4 col-xs-6 col-product">
+                            <div class="col-md-3 col-sm-4 col-6 col-product">
                                 <button class="btn btn-primary btn-product {{ random.choice(['blue', 'lightblue', 'purple', 'red', 'green'])}}-bg" type="button" data-toggle="button" value="{{ item.key }}" title="{{ item.value['description'] }}">{{ item.value['name'] }}<br><img src="img/{{item.value['image']}}"></button>
                             </div>
                             {% end %}
