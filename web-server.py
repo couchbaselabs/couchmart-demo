@@ -1,4 +1,4 @@
-#!/usr/bin/env - python
+#!/usr/bin/env python
 import tornado.gen
 import tornado.escape
 import tornado.ioloop
@@ -30,8 +30,7 @@ bucket_name=settings.BUCKET_NAME
 user=settings.USERNAME
 password=settings.PASSWORD
 node=settings.NODES[0]
-bucket=Bucket('couchbase://10.142.170.101/{}'.format(bucket_name), username=user, password=password)
-
+bucket=Bucket('couchbase://{0}/{1}'.format(node,bucket_name), username=user, password=password)
 
 class CBStatusWebSocket(tornado.websocket.WebSocketHandler):
   def open(self):
@@ -99,7 +98,6 @@ class ShopHandler(tornado.web.RequestHandler):
   def get(self):
     items = yield bucket.get("items")
     items = yield bucket.get_multi(items.value['items'])
-    print items
     self.render("www/shop.html", items=items)
 
 class SubmitHandler(tornado.web.RequestHandler):

@@ -1,4 +1,4 @@
-#!/usr-bin/env - python
+#!/usr/bin/env - python
 
 from couchbase.bucket import Bucket
 import couchbase
@@ -10,7 +10,8 @@ bucket_name=settings.BUCKET_NAME
 user=settings.USERNAME
 password=settings.PASSWORD
 node=settings.NODES[0]
-SDK_CLIENT = Bucket('couchbase://10.142.170.101/{}'.format(bucket_name), username=user, password=password)
+SDK_CLIENT = Bucket('couchbase://{0}/{1}'.format(node,bucket_name), username=user, password=password)
+
 SDK_CLIENT.timeout = 15
 
 # LIST_DOC="david.3501d7e0-9057-4c74-8de0-259ac8af09ee"
@@ -46,11 +47,6 @@ PRODUCTS = [
 
 
 
-
-
-
-
-
 # {
 #   "complete": false,
 #   "createdAt": 1504112965508,
@@ -73,8 +69,10 @@ def add_products():
     SDK_CLIENT.upsert(LIST_DOC, list_doc)
 
     i = 12000
+    items=[]
     for product in PRODUCTS:
         product_id = "product:" + product['name'] 
+        items.append(product_id)
         product['type'] = "product"
         product['complete'] = False
         # product['createdAt'] = str(datetime.datetime.now())
@@ -83,7 +81,7 @@ def add_products():
         product['product'] = product['name'] 
         product['productList'] = {"id": LIST_DOC, "owner": "david"}
         SDK_CLIENT.upsert(product_id, product)
-
+    SDK_CLIENT.upsert("items", {"items": items})
         # img_filename="./img/"+product['name']+".png"
         # with open(img_filename, "rb") as image_file:
         #     f = image_file.read()
