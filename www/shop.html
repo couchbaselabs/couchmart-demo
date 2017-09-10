@@ -1,4 +1,4 @@
-
+{% import random %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -40,76 +40,18 @@
                     <div class="row">
                         <div class="col align-self-center">
                             <div class="input-group input-group-lg">
-                                <input class="form-control" placeholder="Username">
+                                <input id="name-box" class="form-control" placeholder="Username">
                             </div>
                         </div>
                     </div>
                     <div class="products">
                         <div class="row">
-                        <div class="col-md-3 col-sm-4 col-xs-6">
-                          <button class="btn btn-primary btn-product" type="button" data-toggle="button"><img src="img/sausages.png"></button>
-                        </div>
-                        <div class="col-md-3 col-sm-4 col-xs-6">
-                          <button class="btn btn-primary btn-product" type="button" data-toggle="button"><img src="img/sausages.png"></button>
-                        </div>
-                        <div class="col-md-3 col-sm-4 col-xs-6">
-                          <button class="btn btn-primary btn-product" type="button" data-toggle="button"><img src="img/sausages.png"></button>
-                        </div>
-                        <div class="col-md-3 col-sm-4 col-xs-6">
-                          <button class="btn btn-primary btn-product" type="button" data-toggle="button"><img src="img/sausages.png"></button>
-                        </div>
+                            {% for item in items.itervalues() %}
+                            <div class="col-md-3 col-sm-4 col-xs-6 col-product">
+                                <button class="btn btn-primary btn-product {{ random.choice(['blue', 'lightblue', 'purple', 'red', 'green'])}}-bg" type="button" data-toggle="button" value="{{ item.key }}" title="{{ item.value['description'] }}">{{ item.value['name'] }}<br><img src="img/sausages.png"></button>
+                            </div>
+                            {% end %}
 
-                        <div class="col-md-3 col-sm-4 col-xs-6">
-                          <button class="btn btn-primary btn-product" type="button" data-toggle="button"><img src="img/sausages.png"></button>
-                        </div>
-                        <div class="col-md-3 col-sm-4 col-xs-6">
-                          <button class="btn btn-primary btn-product" type="button" data-toggle="button"><img src="img/sausages.png"></button>
-                        </div>
-                        <div class="col-md-3 col-sm-4 col-xs-6">
-                          <button class="btn btn-primary btn-product" type="button" data-toggle="button"><img src="img/sausages.png"></button>
-                        </div>
-                        <div class="col-md-3 col-sm-4 col-xs-6">
-                          <button class="btn btn-primary btn-product" type="button" data-toggle="button"><img src="img/sausages.png"></button>
-                        </div>
-
-                        <div class="col-md-3 col-sm-4 col-xs-6">
-                          <button class="btn btn-primary btn-product" type="button" data-toggle="button"><img src="img/sausages.png"></button>
-                        </div>
-                        <div class="col-md-3 col-sm-4 col-xs-6">
-                          <button class="btn btn-primary btn-product" type="button" data-toggle="button"><img src="img/sausages.png"></button>
-                        </div>
-                        <div class="col-md-3 col-sm-4 col-xs-6">
-                          <button class="btn btn-primary btn-product" type="button" data-toggle="button"><img src="img/sausages.png"></button>
-                        </div>
-                        <div class="col-md-3 col-sm-4 col-xs-6">
-                          <button class="btn btn-primary btn-product" type="button" data-toggle="button"><img src="img/sausages.png"></button>
-                        </div>
-
-                        <div class="col-md-3 col-sm-4 col-xs-6">
-                          <button class="btn btn-primary btn-product" type="button" data-toggle="button"><img src="img/sausages.png"></button>
-                        </div>
-                        <div class="col-md-3 col-sm-4 col-xs-6">
-                          <button class="btn btn-primary btn-product" type="button" data-toggle="button"><img src="img/sausages.png"></button>
-                        </div>
-                        <div class="col-md-3 col-sm-4 col-xs-6">
-                          <button class="btn btn-primary btn-product" type="button" data-toggle="button"><img src="img/sausages.png"></button>
-                        </div>
-                        <div class="col-md-3 col-sm-4 col-xs-6">
-                          <button class="btn btn-primary btn-product" type="button" data-toggle="button"><img src="img/sausages.png"></button>
-                        </div>
-
-                        <div class="col-md-3 col-sm-4 col-xs-6">
-                          <button class="btn btn-primary btn-product" type="button" data-toggle="button"><img src="img/sausages.png"></button>
-                        </div>
-                        <div class="col-md-3 col-sm-4 col-xs-6">
-                          <button class="btn btn-primary btn-product" type="button" data-toggle="button"><img src="img/sausages.png"></button>
-                        </div>
-                        <div class="col-md-3 col-sm-4 col-xs-6">
-                          <button class="btn btn-primary btn-product" type="button" data-toggle="button"><img src="img/sausages.png"></button>
-                        </div>
-                        <div class="col-md-3 col-sm-4 col-xs-6">
-                          <button class="btn btn-primary btn-product" type="button" data-toggle="button"><img src="img/sausages.png"></button>
-                        </div>
                         </div>
                     </div>
                 </div>
@@ -130,7 +72,7 @@
 <!-- Bootstrap core JavaScript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
-<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script src="js/shop.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>

@@ -17,6 +17,10 @@ img {
     max-width:100%;
 }
 
+.col-product {
+    padding-bottom: 30px;
+}
+
 .btn-product{
     border: 2px solid rgba(235,73,113,1);
     color: #fff;
@@ -38,8 +42,77 @@ img {
     max-width:100%
 }
 
+.green-bg {
+    border-color: #00b9be;
+    background: #00b9be;
+}
+
+.green-bg:hover {
+    color: #00b9be;
+}
+
+.green-bg.active {
+    color: #00b9be;
+}
+
+.lightblue-bg {
+    border-color: #00abdf;
+    background: #00abdf;
+}
+
+.lightblue-bg:hover {
+    color: #00abdf;
+}
+
+.lightblue-bg.active {
+    color: #00abdf;
+}
+
+.blue-bg {
+    border-color: #0074e0;
+    background: #0074e0;
+}
+
+.blue-bg:hover {
+    color: #0074e0;
+}
+
+.blue-bg.active {
+    color: #0074e0;
+}
+
+.purple-bg {
+    border-color: #b36cdb;
+    background: #b36cdb;
+}
+
+.purple-bg:hover {
+    color: #b36cdb;
+}
+
+.purple-bg.active {
+    color: #b36cdb;
+}
+
+.red-bg {
+    border-color: #eb4971;
+    background: #eb4971;
+}
+
+.red-bg:hover {
+    color: #eb4971;
+}
+
+.red-bg.active{
+    color: #eb4971;
+}
+
 .btn-product:hover {
-    color: rgb(179,108,219);
+    background-color: white;
+    border-color: white;
+}
+
+.btn-product.active {
     background-color: white;
     border-color: white;
 }
@@ -49,13 +122,13 @@ img {
 }
 
 .submit-btn{
-    border: 2px solid rgba(235,73,113,1);
-    color: #fff;
+    border: 2px solid #fff;
+    color: #e81c21;
     font-style: normal;
     font-weight: 700;
     font-size: 18px;
     text-transform: capitalize;
-    background-color: rgba(235,73,113,1);
+    background: #ffffff;
     cursor: pointer;
     padding: 17px 30px 13px;
     display: inline-block;
@@ -65,12 +138,11 @@ img {
     -webkit-transition: all 0.3s;
     -moz-transition: all 0.3s;
     transition: all 0.3s;
-    width: 200px;
 }
 
 .submit-btn:hover{
-    color: rgb(179,108,219);
-    background-color: white;
+    color: white;
+    background-color: #ea2328;
     border-color: white;
 }
 

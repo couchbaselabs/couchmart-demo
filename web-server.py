@@ -1,9 +1,14 @@
 #!/usr/bin/env - python
-
+import tornado.gen
+import tornado.escape
 import tornado.ioloop
 import tornado.web
 import tornado.websocket
-import time,random
+import tornado.platform.twisted
+tornado.platform.twisted.install()
+import time,random,datetime
+from txcouchbase.bucket import Bucket
+
 from tornado.ioloop import PeriodicCallback
 
 import cb_status
@@ -20,6 +25,8 @@ class MainHandler(tornado.web.RequestHandler):
     print "Got one"
 
 socket_list = []
+bucket = Bucket('couchbase://localhost/default')
+
 
 class CBStatusWebSocket(tornado.websocket.WebSocketHandler):
   def open(self):
@@ -81,13 +88,36 @@ class LiveOrdersWebSocket(tornado.websocket.WebSocketHandler):
       msg['images'].append("./img/"+IMAGE_LIST[index])
     self.write_message(msg)
 
+
+class ShopHandler(tornado.web.RequestHandler):
+  @tornado.gen.coroutine
+  def get(self):
+    items = yield bucket.get("items")
+    items = yield bucket.get_multi(items.value['items'])
+    print items
+    self.render("www/shop.html", items=items)
+
+class SubmitHandler(tornado.web.RequestHandler):
+  @tornado.gen.coroutine
+  def post(self):
+    data = tornado.escape.json_decode(self.request.body)
+    if 'name' not in data or 'order' not in data or \
+            ('order' in data and len(data['order']) != 5):
+      self.send_error(400)
+      return
+
+    key = "Order::{}::{}".format(data['name'], datetime.datetime.utcnow().isoformat())
+    yield bucket.upsert(key, data)
+
 def make_app():
   return tornado.web.Application([
     (r"/", MainHandler),
     (r"/socket", CBStatusWebSocket),
     (r"/liveorders", LiveOrdersWebSocket),
+    (r'/shop', ShopHandler),
+    (r'/submit_order', SubmitHandler),
     (r'/(.*)', tornado.web.StaticFileHandler, {'path': "./www/"}),
-    ])
+    ], debug=True)
 
 if __name__ == "__main__":
   print "Running at http://localhost:8888"
