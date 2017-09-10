@@ -1,12 +1,13 @@
 #!/usr/bin/env - python
 
 import urllib, urllib2, cookielib, pprint, json, time, sys, codecs, base64
+import settings
 
-HOST="http://10.142.170.101:8091"
+HOST="http://{}:8091".format(settings.NODES[0])
 BUCKET_URL = HOST + "/pools/default/buckets"
 NODE_URL =   HOST + "/pools/default/serverGroups"
-USERNAME="Administrator"
-PASSWORD="password"
+USERNAME=settings.ADMIN_USER
+PASSWORD=settings.ADMIN_PASS
 AUTH_STRING = base64.encodestring('%s:%s' % (USERNAME, PASSWORD)).replace('\n', '')
 
 

@@ -4,9 +4,13 @@ from couchbase.bucket import Bucket
 import couchbase
 import uuid
 import datetime
+import settings
 
-BUCKET_NAME = 'charlie'
-SDK_CLIENT = Bucket('couchbase://10.142.170.101/{}'.format(BUCKET_NAME), username='charlie', password='password')
+bucket_name=settings.BUCKET_NAME
+user=settings.USERNAME
+password=settings.PASSWORD
+node=settings.NODES[0]
+SDK_CLIENT = Bucket('couchbase://10.142.170.101/{}'.format(bucket_name), username=user, password=password)
 SDK_CLIENT.timeout = 15
 
 # LIST_DOC="david.3501d7e0-9057-4c74-8de0-259ac8af09ee"

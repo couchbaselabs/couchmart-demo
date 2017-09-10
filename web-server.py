@@ -12,6 +12,7 @@ from txcouchbase.bucket import Bucket
 from tornado.ioloop import PeriodicCallback
 
 import cb_status
+import settings
 
 IMAGE_LIST=["apples.png", "bonbons.png", "carambar.png", "cookie.png", "ham.png", "red_wine.png", "water.png", 
 "bacon.png", "bread.png", "champagne.png", "crisps.png", "milk.png", "sausages.png", "whisky.png", "bananas.png", 
@@ -25,7 +26,11 @@ class MainHandler(tornado.web.RequestHandler):
     print "Got one"
 
 socket_list = []
-bucket = Bucket('couchbase://localhost/default')
+bucket_name=settings.BUCKET_NAME
+user=settings.USERNAME
+password=settings.PASSWORD
+node=settings.NODES[0]
+bucket=Bucket('couchbase://10.142.170.101/{}'.format(bucket_name), username=user, password=password)
 
 
 class CBStatusWebSocket(tornado.websocket.WebSocketHandler):
