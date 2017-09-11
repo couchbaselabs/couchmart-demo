@@ -32,6 +32,7 @@ password=settings.PASSWORD
 node=settings.NODES[0]
 bucket=Bucket('couchbase://{0}/{1}'.format(node,bucket_name), username=user, password=password)
 
+
 class CBStatusWebSocket(tornado.websocket.WebSocketHandler):
   def open(self):
     print self
@@ -50,8 +51,9 @@ class CBStatusWebSocket(tornado.websocket.WebSocketHandler):
     self.callback.stop()
 
   def getNodeStatus(self):
-    resp = cb_status.getNodeStatus()
-    msg = {"nodes": resp}
+    nodes = cb_status.getNodeStatus()
+    fts_enabled = cb_status.fts_enabled()
+    msg = {"nodes": nodes, 'fts': fts_enabled}
     self.write_message(msg)
 
   def change_colour(self):

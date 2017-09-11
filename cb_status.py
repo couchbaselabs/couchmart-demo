@@ -40,6 +40,9 @@ def getNodeStatus():
     node_list.append(node_status)    
   return node_list
 
+def fts_enabled():
+  bucket_response = json.loads(get_URL(BUCKET_URL))
+  return any('fts' in node['services'] for bucket in bucket_response for node in bucket["nodes"])
 
 def main(args):
   while True:
