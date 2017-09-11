@@ -208,18 +208,83 @@ public class TasksFragment extends Fragment {
             ImageView imageView = (ImageView) convertView.findViewById(R.id.photo);
             String productName = (String) product.getProperty("product");
             switch (productName) {
-                case "eggs":
-
-                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_eggs));
+                case "apples":
+                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_apples));
                     break;
                 case "bacon":
                     if (isEnabled(position))
-                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_bacon));
+                        imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_bacon));
                     else
                         imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_no_bacon));
                     break;
+                case "bananas":
+                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_bananas));
+                    break;
+                case "beer":
+                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_beer));
+                    break;
+                case "bonbons":
+                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_bonbons));
+                    break;
+                case "bread":
+                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_bread));
+                    break;
+                case "burger":
+                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_burger));
+                    break;
+                case "butter":
+                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_butter));
+                    break;
+                case "carambars":
+                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_carambars));
+                    break;
+                case "champagne":
+                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_champagne));
+                    break;
                 case "cheese":
                     imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_cheese));
+                    break;
+                case "chocolate":
+                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_chocolate));
+                    break;
+                case "cookie":
+                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_cookie));
+                    break;
+                case "crisps":
+                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_crisps));
+                    break;
+                case "eggs":
+                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_eggs));
+                    break;
+                case "fish fingers":
+                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_fish_fingers));
+                    break;
+                case "ham":
+                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_ham));
+                    break;
+                case "milk":
+                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_milk));
+                    break;
+                case "oranges":
+                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_oranges));
+                    break;
+                case "pineapples":
+                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_pineapple));
+                    break;
+                case "red wine":
+                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_red_wine));
+                    break;
+                case "sausages":
+                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_sausages));
+                    break;
+                case "strawberries":
+                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_strawberries));
+                    break;
+                case "water":
+                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_water));
+                    break;
+                case "whisky":
+                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_whisky));
                     break;
                 default:
                     imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_note));
@@ -237,8 +302,9 @@ public class TasksFragment extends Fragment {
             text.setText((String) product.getProperty("product"));
 
             final CheckBox checkBox = (CheckBox) convertView.findViewById(R.id.checked);
-            checkBox.setChecked(false);
+            checkBox.setChecked(shoppingBasket.contains((product.getId())));
             checkBox.setEnabled(isEnabled(position));
+
             checkBox.setOnClickListener(new android.view.View.OnClickListener() {
                 @Override
                 public void onClick(android.view.View view) {
