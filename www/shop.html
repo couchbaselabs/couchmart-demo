@@ -38,9 +38,11 @@
                     </div>
                     <div class="products">
                         <div class="row">
-                            {% for item in items.itervalues() %}
+                            {% set keys = items.keys() %}
+                            {% set foo = random.shuffle(keys) %}
+                            {% for key in keys %}
                             <div class="col-md-3 col-sm-4 col-6 col-product">
-                                <button class="btn btn-primary btn-product {{ random.choice(['blue', 'lightblue', 'purple', 'red', 'green'])}}-bg" type="button" data-toggle="button" value="{{ item.key }}" title="{{ item.value['description'] }}">{{ item.value['name'] }}<br><img src="img/{{item.value['image']}}"></button>
+                                <button class="btn btn-primary btn-product {{ random.choice(['blue', 'lightblue', 'purple', 'red', 'green'])}}-bg" type="button" data-toggle="button" value="{{ key }}" title="{{ items[key].value['description'] }}">{{ items[key].value['name'] }}<br><img src="img/{{items[key].value['image']}}"></button>
                             </div>
                             {% end %}
 
