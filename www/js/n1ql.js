@@ -29,7 +29,7 @@ window.onload = function BackgroundSocket(){
         $("#backslot4").css({backgroundImage : 'url("' + images[3] + ' ")'});
         $("#backslot5").css({backgroundImage : 'url("' + images[4] + ' ")'});
       }
-      $(".flip").flip(showing_front);
+      $(".flip").flip(!showing_front);
       showing_front = ! showing_front;
       $(".flip").flip({reverse: showing_front});
      };

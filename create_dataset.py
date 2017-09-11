@@ -61,7 +61,9 @@ PRODUCTS = [
 def do_queries():
     for row in SDK_CLIENT.n1ql_query('SELECT  name,stock FROM charlie WHERE type == "product" ORDER BY stock DESC LIMIT 5'):
         print row
-
+    for row in  SDK_CLIENT.n1ql_query('SELECT META(charlie).id as order_id, name, `order` \
+                                  FROM charlie where type == "order" ORDER by ts DESC LIMIT 1'):
+        print row
 
 list_doc = {"type": "product-list", "owner": "david", "name": "big fat shopping list"}
 
@@ -89,5 +91,6 @@ def add_products():
         #     SDK_CLIENT.upsert("img:"+product['name'], image_bytes,  format=couchbase.FMT_BYTES)
 
 
-add_products()
-do_queries()
+if __name__=='__main__':
+    add_products()
+    do_queries()

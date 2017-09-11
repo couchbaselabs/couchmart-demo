@@ -14,12 +14,6 @@ from tornado.ioloop import PeriodicCallback
 import cb_status
 import settings
 
-IMAGE_LIST=["apples.png", "bonbons.png", "carambar.png", "cookie.png", "ham.png", "red_wine.png", "water.png", 
-"bacon.png", "bread.png", "champagne.png", "crisps.png", "milk.png", "sausages.png", "whisky.png", "bananas.png", 
-"burger.png", "cheese.png", "eggs.png", "oranges.png", "beer.png", "butter.png", "chocolate.png", "fish_fingers.png",
-"pineapple.png", "strawberries.png"]
-
-
 class MainHandler(tornado.web.RequestHandler):
   def get(self):
     self.render("www/index.html")
@@ -31,7 +25,6 @@ user=settings.USERNAME
 password=settings.PASSWORD
 node=settings.NODES[0]
 bucket=Bucket('couchbase://{0}/{1}'.format(node,bucket_name), username=user, password=password)
-
 
 class CBStatusWebSocket(tornado.websocket.WebSocketHandler):
   def open(self):
@@ -88,13 +81,9 @@ class LiveOrdersWebSocket(tornado.websocket.WebSocketHandler):
     self.callback.stop()
 
   def send_orders(self):
-    msg = {"name": "Billy", "images" :[]}
-    for i in xrange(5):
-      index = random.randint(0,len(IMAGE_LIST)-1)
-      msg['images'].append("./img/"+IMAGE_LIST[index])
-    self.write_message(msg)
-
-
+      resp = cb_status.getLatestOrders()
+      self.write_message(resp)   
+    
 class ShopHandler(tornado.web.RequestHandler):
   @tornado.gen.coroutine
   def get(self):
@@ -112,6 +101,8 @@ class SubmitHandler(tornado.web.RequestHandler):
       return
 
     key = "Order::{}::{}".format(data['name'], datetime.datetime.utcnow().isoformat())
+    data['ts'] = int(time.time())
+    data['type'] = "order"
     yield bucket.upsert(key, data)
 
 def make_app():
