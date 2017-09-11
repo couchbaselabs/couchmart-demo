@@ -30,3 +30,14 @@ $( ".submit-btn" ).click(function() {
 
     active_buttons.removeClass("active");
 });
+
+$( ".btn-product" ).click(function (event){
+    var active_buttons = $(".btn-product.active");
+     if (active_buttons.length >= 5) {
+         if (!$(this).hasClass("active")) {
+
+         alert("Cannot select more than 5 items.");
+         event.stopPropagation();
+        }
+    }
+});
