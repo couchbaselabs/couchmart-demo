@@ -131,6 +131,7 @@ img {
 .submit-btn{
     border: 2px solid #fff;
     color: #e81c21;
+    width: 100%;
     font-style: normal;
     font-weight: 700;
     font-size: 18px;
