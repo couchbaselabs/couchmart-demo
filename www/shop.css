@@ -44,13 +44,20 @@ img {
     width:100%;
 }
 
+.btn-product.active {
+    background-color: white;
+    border-color: white;
+}
+
 .green-bg {
     border-color: #00b9be;
     background: #00b9be;
 }
 
 .green-bg:hover {
-    color: #00b9be;
+    border: 2px solid #00b9be;
+    color: white;
+    background: linear-gradient(135deg, #00b9be 0%,white 100%);
 }
 
 .green-bg.active {
@@ -63,7 +70,9 @@ img {
 }
 
 .lightblue-bg:hover {
-    color: #00abdf;
+    border: 2px solid #00abdf;
+    color: white;
+    background: linear-gradient(135deg, #00abdf 0%,white 100%);
 }
 
 .lightblue-bg.active {
@@ -76,7 +85,9 @@ img {
 }
 
 .blue-bg:hover {
-    color: #0074e0;
+    border: 2px solid #0074e0;
+    background: linear-gradient(135deg, #0074e0 0%,white 100%);
+    color: white;
 }
 
 .blue-bg.active {
@@ -89,7 +100,9 @@ img {
 }
 
 .purple-bg:hover {
-    color: #b36cdb;
+    border: 2px solid #b36cdb;
+    background: linear-gradient(135deg, #b36cdb 0%,white 100%);
+    color: white;
 }
 
 .purple-bg.active {
@@ -102,21 +115,13 @@ img {
 }
 
 .red-bg:hover {
-    color: #eb4971;
+    border: 2px solid #eb4971;
+    background: linear-gradient(135deg, #eb4971 0%,white 100%);
+    color: white;
 }
 
 .red-bg.active{
     color: #eb4971;
-}
-
-.btn-product:hover {
-    background-color: white;
-    border-color: white;
-}
-
-.btn-product.active {
-    background-color: white;
-    border-color: white;
 }
 
 .products {
