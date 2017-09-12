@@ -63,3 +63,72 @@ if (hasTouch()) { // remove all :hover stylesheets
     } catch (ex) {
     }
 }
+
+$(".search-btn").click(function() {
+    $(".search-btn").attr("disabled", true);
+    $.get("/search", function (data){
+        console.log(data);
+        $(".search-btn").attr("disabled", false);
+    });
+});
+
+$(".type-btn").click(function(){
+    if ($(this).hasClass("active")){
+        $(".btn-product").each(function () {
+              $(this).parent().show();
+        });
+        return;
+    }
+
+    $(".type-btn.active").each(function(){
+        $(this).removeClass("active");
+    });
+
+    $.get("/filter?type=" + $(this).val(), function (data){
+        $(".btn-product").each(function () {
+          if (data['keys'].indexOf($(this).val()) === -1){
+              $(this).parent().hide();
+          }else{
+              $(this).parent().show();
+          }
+        })
+    });
+});
+
+window.onload = function BackgroundSocket(){
+
+    if ("WebSocket" in window) {
+       // Let us open a web socket
+       var ws = new WebSocket("ws://localhost:8888/socket");
+
+       ws.onopen = function() {
+          // Web Socket is connected, send data using send()
+          ws.send("Bingo Bango");
+       };
+
+       ws.onmessage = function (evt)
+       {
+          var msg = JSON.parse(evt.data);
+          if (msg['fts']){
+              $(".search-container").show();
+          } else {
+              $(".search-container").hide();
+          }
+
+        console.log("received: "+msg)
+
+     };
+
+     ws.onclose = function()
+     {
+        // websocket is closed.
+        alert("Connection is closed...");
+     };
+    }
+    else
+    {
+       // The browser doesn't support WebSocket
+       alert("WebSocket NOT supported by your Browser!");
+    }
+ };
+

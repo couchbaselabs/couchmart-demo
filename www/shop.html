@@ -1,4 +1,4 @@
-{% import random %}
+{% import random%}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,8 +27,15 @@
             <div class="inner cover">
                 <div class="container">
                     <div class="row">
-                        <a href="/shop"><h1 class="masthead-brand">Couchmart</h1></a>
+                        <div class="col-md-8 col-sm-6 col-8">
+                            <a href="/shop"><h1 class="masthead-brand">CouchMart</h1></a>
+                        </div>
+                        <div class="col-md-4 col-sm-6 col-8 search-container">
+                            <input type="text" name="q" placeholder="Search Products" class="search-input">
+                            <button class="search-btn"><img src="/img/search_glass.png" alt="Search"></button>
+                        </div>
                     </div>
+
                     <div class="row">
                         <div class="col align-self-center">
                             <div class="input-group input-group-lg">
@@ -36,18 +43,26 @@
                             </div>
                         </div>
                     </div>
-                    <div class="products">
-                        <div class="row">
-                            {% set keys = items.keys() %}
-                            {% set foo = random.shuffle(keys) %}
-                            {% for key in keys %}
-                            <div class="col-md-3 col-sm-4 col-6 col-product">
-                                <button class="btn btn-primary btn-product {{ random.choice(['blue', 'lightblue', 'purple', 'red', 'green'])}}-bg" type="button" data-toggle="button" value="{{ key }}" title="{{ items[key].value['description'] }}">{{ items[key].value['name'] }}<br><img src="img/{{items[key].value['image']}}"></button>
-                            </div>
-                            {% end %}
 
+                    <div class="row type-row justify-content-end">
+                        {% for x in sorted(['dairy', 'meat', 'drinks', 'snacks', 'basics', 'fruit']) %}
+                        <div class="col">
+                            <input class="btn btn-primary type-btn" data-toggle="button" type="button" value="{{ x }}">
                         </div>
+                        {% end %}
                     </div>
+
+                    <div class="row products">
+                        {% set keys = items.keys() %}
+                        {% set foo = random.shuffle(keys) %}
+                        {% for key in keys %}
+                        <div class="col-md-3 col-sm-4 col-6 col-product">
+                            <button class="btn btn-primary btn-product {{ random.choice(['blue', 'lightblue', 'purple', 'red', 'green'])}}-bg" type="button" data-toggle="button" value="{{ key }}" title="{{ items[key].value['description'] }}">{{ items[key].value['name'] }}<br><img src="img/{{items[key].value['image']}}"></button>
+                        </div>
+                        {% end %}
+
+                    </div>
+
                 </div>
                 <div class="row" style="padding-bottom:20px;">
                     <div class="col-1"></div>

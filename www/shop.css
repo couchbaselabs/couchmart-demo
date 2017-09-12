@@ -274,7 +274,24 @@ body {
   font-weight: bold;
 }
 
+.search-container{
+    margin: auto;
+}
 
+.search-btn{
+    background: transparent;
+    border: none;
+}
+
+.search-input{
+        height: 100%;
+    float: left;
+    width: calc(100% - 41px);
+    background: linear-gradient(to bottom, rgba(51,51,51,1) 0%,rgba(32,26,25,1) 100%);
+    border: none;
+    color: #FFF;
+    padding: 11px 15px 5px 0;
+}
 /*
  * Footer
  */
@@ -283,7 +300,36 @@ body {
   color: rgba(255,255,255,.5);
 }
 
+.type-btn{
+    border: 2px solid #fff;
+    color: #e81c21;
+    width: 80%;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 18px;
+    text-transform: capitalize;
+    text-align: center;
+    background: #ffffff;
+    cursor: pointer;
+    padding: 17px 30px 13px 30px;
+    display: inline-block;
+    letter-spacing: -0.025em;
+    outline: none;
+    position: relative;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
+}
 
+.type-btn:hover{
+    color: white;
+    background-color: #ea2328;
+    border-color: white;
+}
+
+.type-row {
+    padding-top: 20px;
+}
 /*
  * Affix and center
  */
@@ -300,7 +346,7 @@ body {
   }
   /* Start the vertical centering */
   .site-wrapper-inner {
-    vertical-align: middle;
+    vertical-align: top;
   }
   /* Handle the widths */
   .masthead,

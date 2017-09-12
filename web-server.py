@@ -105,6 +105,27 @@ class SubmitHandler(tornado.web.RequestHandler):
     data['type'] = "order"
     yield bucket.upsert(key, data)
 
+class SearchHandler(tornado.web.RequestHandler):
+  @tornado.gen.coroutine
+  def get(self):
+    yield tornado.gen.sleep(5)
+    self.write("yeah boiii")
+
+
+class FilterHandler(tornado.web.RequestHandler):
+  @tornado.gen.coroutine
+  def get(self):
+    data = self.get_query_argument('type')
+    results = yield bucket.n1qlQueryAll('SELECT meta().id FROM {} WHERE category = "{}"'
+                                        .format(bucket_name, data))
+
+    final_results=[]
+    for row in results:
+      final_results.append(row['id'])
+
+    self.write({'keys': final_results})
+
+
 def make_app():
   return tornado.web.Application([
     (r"/", MainHandler),
@@ -112,6 +133,8 @@ def make_app():
     (r"/liveorders", LiveOrdersWebSocket),
     (r'/shop', ShopHandler),
     (r'/submit_order', SubmitHandler),
+    (r'/search', SearchHandler),
+    (r'/filter', FilterHandler),
     (r'/(.*)', tornado.web.StaticFileHandler, {'path': "./www/"}),
     ], debug=True)
 
