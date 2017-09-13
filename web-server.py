@@ -131,7 +131,7 @@ class SearchHandler(tornado.web.RequestHandler):
       query = ' '.join(["{}~1".format(term) for term in terms])
       data = '{"query": {"query": "' + query + '"}, "highlight": null, "fields": null, "facets": null, "explain": false}'
       request = HTTPRequest(url='http://{}:8094/api/index/English/query'.format(node), method='POST',
-                            body=data, auth_username='Administrator', auth_password='password', auth_mode='basic', user_agent="test",
+                            body=data, auth_username=settings.ADMIN_USER, auth_password=settings.ADMIN_PASS, auth_mode='basic',
                             headers={'Content-Type': 'application/json'})
       response = yield self.http_client.fetch(request)
 
