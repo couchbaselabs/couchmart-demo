@@ -1,13 +1,15 @@
 #!/usr/bin/env - python
 
-import urllib, urllib2, cookielib, pprint, json, time, sys, codecs, base64
+import urllib, urllib2, cookielib, pprint, json, time, sys, codecs, base64, random
 import settings
 from create_dataset import PRODUCTS as PRODUCTS
 from txcouchbase.bucket import Bucket
 
 HOST="http://{}:8091".format(settings.NODES[0])
 BUCKET_URL = HOST + "/pools/default/buckets"
-NODE_URL =   HOST + "/pools/default/serverGroups"
+NODE_URL = HOST + "/pools/default/serverGroups"
+INDEX_URL = HOST + "/indexStatus"
+FTS_URL = HOST.replace('8091', '8094') + "/api/index"
 USERNAME=settings.ADMIN_USER
 PASSWORD=settings.ADMIN_PASS
 AUTH_STRING = base64.encodestring('%s:%s' % (USERNAME, PASSWORD)).replace('\n', '')
@@ -60,6 +62,13 @@ def getNodeStatus():
 def fts_enabled():
   bucket_response = json.loads(get_URL(BUCKET_URL))
   return any('fts' in node['services'] for bucket in bucket_response for node in bucket["nodes"])
+
+def n1ql_enabled():
+  index_response = json.loads(get_URL(INDEX_URL))
+  print index_response
+
+  return 'indexes' in index_response and any(index['index'] == 'category' and index['status'] == u'Ready' for index in index_response['indexes'])
+
 
 LAST_ORDER_QUERY=("SELECT META(charlie).id as order_id, name, `order`" 
                   "FROM charlie WHERE type == \"order\" "

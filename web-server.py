@@ -35,8 +35,9 @@ class CBStatusWebSocket(tornado.websocket.WebSocketHandler):
       socket_list.append(self)
       self.red = 255
       print("WebSocket opened")
-      self.callback = tornado.ioloop.PeriodicCallback(self.getNodeStatus,5000)
+      self.callback = tornado.ioloop.PeriodicCallback(self.getNodeStatus,1000)
       self.callback.start()
+      self.getNodeStatus()
 
   def on_message(self, message):
     print "on_message received:" + message
@@ -48,7 +49,8 @@ class CBStatusWebSocket(tornado.websocket.WebSocketHandler):
   def getNodeStatus(self):
     nodes = cb_status.getNodeStatus()
     fts_enabled = cb_status.fts_enabled()
-    msg = {"nodes": nodes, 'fts': fts_enabled}
+    n1ql_enabled = cb_status.n1ql_enabled()
+    msg = {"nodes": nodes, 'fts': fts_enabled, 'n1ql': n1ql_enabled}
     self.write_message(msg)
 
   def change_colour(self):

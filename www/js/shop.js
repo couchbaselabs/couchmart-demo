@@ -166,6 +166,11 @@ window.onload = function BackgroundSocket(){
               $(".search-container").hide();
           }
 
+          if (msg['n1ql']){
+              $(".type-row").show();
+          } else {
+              $(".type-row").hide();
+          }
         console.log("received: "+msg)
 
      };
