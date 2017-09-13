@@ -90,6 +90,7 @@ class LiveOrdersWebSocket(tornado.websocket.WebSocketHandler):
   @tornado.gen.coroutine
   def send_orders(self):
     last_orders = yield bucket.n1qlQueryAll(self.LAST_ORDER_QUERY)
+    msg = {}
     for order in last_orders:
       msg = {"name": order['name'], "images" :[]}
       for prod in order['order']:

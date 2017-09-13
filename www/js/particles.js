@@ -91,7 +91,7 @@ var Particle = function(index){
 
   
 function drawCircles(){  
-  ctx.clearRect(0, 0, 800,400);
+  ctx.clearRect(0, 0, c.width,c.height);
   for (i=0; (i< LIVE_PARTICLES && i < MAX_PARTICLES);i++)
   {
   if ( (NODE_1_ALIVE && (i % 4 == 0)) ||
