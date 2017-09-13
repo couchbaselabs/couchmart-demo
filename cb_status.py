@@ -69,6 +69,7 @@ def fts_node():
   for node in response["nodesExt"]:
     if 'fts' in node['services']:
       return node['hostname']
+  return None
 
 def n1ql_enabled():
   index_response = json.loads(get_URL(INDEX_URL))
