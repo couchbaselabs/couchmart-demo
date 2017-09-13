@@ -30,7 +30,7 @@
                         <div class="col-md-8 col-sm-6 col-8">
                             <a href="/"><h1 class="masthead-brand">CouchMart</h1></a>
                         </div>
-                        <div class="col-md-4 col-sm-6 col-8 col-offset-8 search-container">
+                        <div class="col-md-4 col-sm-6 col-8 col-offset-8 search-container" style="display:none;">
                             <input type="text" name="q" placeholder="Search Products" class="search-input">
                             <button class="search-btn"><img src="/img/search_glass.png" alt="Search"></button>
                         </div>
@@ -44,7 +44,7 @@
                         </div>
                     </div>
 
-                    <div class="row type-row justify-content-end">
+                    <div class="row type-row justify-content-end" style="display:none;">
                         {% for x in sorted(['dairy', 'meat', 'drinks', 'snacks', 'basics', 'fruit']) %}
                         <div class="col type-btn-col">
                             <input class="btn btn-primary type-btn" data-toggle="button" type="button" value="{{ x }}">
