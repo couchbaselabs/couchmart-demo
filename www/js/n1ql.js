@@ -2,7 +2,7 @@ var showing_front = false;
 window.onload = function N1QLSocket(){
   if ("WebSocket" in window) {
      // Let us open a web socket
-     var ws = new WebSocket("ws://localhost:8888/liveorders");
+     var ws = new WebSocket("ws://" + location.host + "/liveorders");
      ws.onopen = function() {
        // Web Socket is connected, send data using send()
         ws.send("Bingo Bango");

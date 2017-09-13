@@ -1,7 +1,7 @@
 window.onload = function NodeStatusSocket(){
     if ("WebSocket" in window) {
        // Let us open a web socket
-       var ws = new WebSocket("ws://localhost:8888/nodestatus");
+       var ws = new WebSocket("ws://" + location.host + "/nodestatus");
 
        ws.onopen = function() {
           // Web Socket is connected, send data using send()
