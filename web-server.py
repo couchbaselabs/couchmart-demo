@@ -84,9 +84,17 @@ class LiveOrdersWebSocket(tornado.websocket.WebSocketHandler):
     print("WebSocket closed")
     self.callback.stop()
 
+  LAST_ORDER_QUERY=("SELECT META(charlie).id as order_id, name, `order`" 
+                  "FROM charlie WHERE type == \"order\" "
+                  "ORDER by ts DESC LIMIT 1")
+  @tornado.gen.coroutine
   def send_orders(self):
-      resp = cb_status.getLatestOrders()
-      self.write_message(resp)   
+    last_orders = yield bucket.n1qlQueryAll(self.LAST_ORDER_QUERY)
+    for order in last_orders:
+      msg = {"name": order['name'], "images" :[]}
+      for prod in order['order']:
+        msg['images'].append("./img/"+cb_status.getImageForProduct(prod))
+    self.write_message(msg)  
     
 class ShopHandler(tornado.web.RequestHandler):
   @tornado.gen.coroutine

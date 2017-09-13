@@ -1,7 +1,7 @@
 var c = document.getElementById("activity");
 var ctx = c.getContext("2d");
 
-var LIVE_PARTICLES=1;
+var LIVE_PARTICLES=0;
 
 window.requestAnimFrame =
     window.requestAnimationFrame ||
@@ -20,13 +20,17 @@ MIN_SPEED=0.1
 MAX_SPEED = 4
 MIN_SIZE = 5
 MAX_SIZE = 15
+NODE_1_ALIVE=true
+NODE_2_ALIVE=true
+NODE_3_ALIVE=true
+NODE_4_ALIVE=true
 
 particles = []
 
 palette = [{"red": 235, "green": 73, "blue": 113},
            {"red": 0, "green": 185, "blue": 190},
-           {"red": 0, "green": 0, "blue": 255},
-           {"red": 255, "green": 0, "blue": 255}]
+           {"red": 179, "green": 108, "blue": 219},
+           {"red": 0, "green": 116, "blue": 224}]
 
 
 var Particle = function(index){
@@ -88,10 +92,16 @@ var Particle = function(index){
   
 function drawCircles(){  
   ctx.clearRect(0, 0, 800,400);
-  for (i=0; i< LIVE_PARTICLES;i++)
-  {    
-   particles[i].update();
-   particles[i].draw();
+  for (i=0; (i< LIVE_PARTICLES && i < MAX_PARTICLES);i++)
+  {
+  if ( (NODE_1_ALIVE && (i % 4 == 0)) ||
+       (NODE_2_ALIVE && (i % 4 == 1)) ||  
+       (NODE_3_ALIVE && (i % 4 == 2)) ||  
+       (NODE_4_ALIVE && (i % 4 == 3)) )  
+      {
+      particles[i].update();
+      particles[i].draw();
+    }
   }
 }
 

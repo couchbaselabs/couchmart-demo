@@ -14,7 +14,7 @@
   
  <body>
   <div class="container">
-      <div class="row">
+<!--       <div class="row">
         <div class="left col-md-6"><h3 class="text-center">Top Products</h3>
 
 <ul class="list-group">
@@ -24,42 +24,40 @@
   <li class="list-group-item"><img src="./img/crisps.png" alt="" />Crisps</li>
   <li class="list-group-item"><img src="./img/oranges.png" alt="" />Oranges</li>
 </ul>
-  </div>
-      <div class="right col-md-6"><h3 class="text-center">Happy Shoppers</h3>
-          <div class="flip"> 
-    <div class="front"> 
-        
+  </div> -->
+      
 
-   <h3 id="happy-shopper" class="text-center"></h3>
-       <div class="row">
-<div id="slot1" class="shop-item col-sm-4"></div>
-<div id="slot2" class="shop-item col-sm-4"></div>
-<div id="slot3" class="shop-item col-sm-4"></div>
-</div>
-       <div class="row">
-<div class="col-sm-2"></div>
-<div id="slot4" class="shop-item col-sm-4"></div>
-<div id="slot5" class="shop-item col-sm-4"></div>
-<div class="col-sm-2"></div>
-    </div>
-<!-- <div class="right col-md-2">A</div>
-<div class="right col-md-2">A</div>
-<div class="right col-md-1">.</div> -->
-    </div> 
+    <div class="right orange-gradient"><h3 class="text-center">Happy Shoppers</h3>
+
+      <div class="order-card"> 
+        <div class="front"> 
+           <h3 id="happy-shopper" class="text-center"></h3>
+         <div class="row">
+          <div id="slot1" class="shop-item col-4"></div>
+          <div id="slot2" class="shop-item col-4"></div>
+          <div id="slot3" class="shop-item col-4"></div>
+        </div>
+         <div class="row">
+          <div class="col-2"></div>
+          <div id="slot4" class="shop-item col-4"></div>
+          <div id="slot5" class="shop-item col-4"></div>
+          <div class="col-2"></div>
+        </div>
+      </div> 
         <div class="back">
           <h3 id="unhappy-shopper" class="text-center"></h3>
        <div class="row">
-<div id="backslot1" class="shop-item col-sm-4"></div>
-<div id="backslot2" class="shop-item col-sm-4"></div>
-<div id="backslot3" class="shop-item col-sm-4"></div>
-</div>
-       <div class="row">
-<div class="col-sm-2"></div>
-<div id="backslot4" class="shop-item col-sm-4"></div>
-<div id="backslot5" class="shop-item col-sm-4"></div>
-<div class="col-sm-2"></div>
+        <div id="backslot1" class="shop-item col-4"></div>
+        <div id="backslot2" class="shop-item col-4"></div>
+        <div id="backslot3" class="shop-item col-4"></div>
+        </div>
+     <div class="row">
+        <div class="col-2"></div>
+        <div id="backslot4" class="shop-item col-4"></div>
+        <div id="backslot5" class="shop-item col-4"></div>
+        <div class="col-2"></div>
     </div> 
-    </div>
+    </div> 
       </div>
 
        </div>
@@ -78,8 +76,8 @@
 
 <script>
 $(function(){
-    $(".flip").flip({
-        trigger: 'click'
+    $(".order-card").flip({
+        trigger: 'manual'
     });
 });
 </script>
