@@ -10,6 +10,7 @@ window.onload = function BackgroundSocket(){
 
      ws.onmessage = function (evt) 
      { 
+
       var msg = JSON.parse(evt.data);
       images=msg['images']
       if (showing_front){
@@ -23,22 +24,22 @@ window.onload = function BackgroundSocket(){
       else
       {
         $("#unhappy-shopper").text(msg['name']);
-        $("#backslot1").css({backgroundImage : 'url("' + images[0] + ' ")'});
-        $("#backslot2").css({backgroundImage : 'url("' + images[1] + ' ")'});
+        $("#backslot1").css({backgroundImage : 'url("' + images[4] + ' ")'});
+        $("#backslot2").css({backgroundImage : 'url("' + images[3] + ' ")'});
         $("#backslot3").css({backgroundImage : 'url("' + images[2] + ' ")'});
-        $("#backslot4").css({backgroundImage : 'url("' + images[3] + ' ")'});
-        $("#backslot5").css({backgroundImage : 'url("' + images[4] + ' ")'});
+        $("#backslot4").css({backgroundImage : 'url("' + images[1] + ' ")'});
+        $("#backslot5").css({backgroundImage : 'url("' + images[0] + ' ")'});
       }
-      $(".flip").flip(!showing_front);
+      // 
+      $(".order-card").flip(!showing_front);
       showing_front = ! showing_front;
-      $(".flip").flip({reverse: showing_front});
      };
 
      ws.onclose = function()
      { 
         // websocket is closed.
-        alert("Connection is closed..."); 
-     };
+        $("#unhappy-shopper").text("Disconnected"); 
+        $("#happy-shopper").text("Disconnected");     };
   }
   
   else

@@ -3,8 +3,7 @@
 import urllib, urllib2, cookielib, pprint, json, time, sys, codecs, base64
 import settings
 from create_dataset import PRODUCTS as PRODUCTS
-from couchbase.bucket import Bucket
-
+from txcouchbase.bucket import Bucket
 
 HOST="http://{}:8091".format(settings.NODES[0])
 BUCKET_URL = HOST + "/pools/default/buckets"
@@ -45,13 +44,16 @@ def getNodeStatus():
   node_list = []
   node_response   = json.loads(get_URL(NODE_URL))
   for node in node_response['groups'][0]['nodes']:
-    node_status = { "hostname": node['hostname'] }
-    if node['status'] != "healthy" or node['clusterMembership'] != "active":
-      node_status['status'] = "broken"
-      node_status['ops'] = 0
+    node_status = { "hostname": node['hostname'], "ops": 0}
+    if node['status'] != "healthy" and node['clusterMembership'] == "active":
+      node_status['status'] = "down"
+    elif node['clusterMembership'] != "active":
+       node_status['status'] = "failed"
     else:
       node_status['status'] = "ok"
-      node_status['ops'] = node['interestingStats']['cmd_get']
+      if "kv" in node['services']:
+        node_status['ops'] = node['interestingStats']['cmd_get']
+
     node_list.append(node_status)    
   return node_list
 
@@ -64,12 +66,13 @@ LAST_ORDER_QUERY=("SELECT META(charlie).id as order_id, name, `order`"
                   "ORDER by ts DESC LIMIT 1")
 
 def getLatestOrders():
-    last_orders =  bucket.n1ql_query(LAST_ORDER_QUERY)
+    last_orders = yield bucket.n1qlQueryAll(LAST_ORDER_QUERY)
     for order in last_orders:
       msg = {"name": order['name'], "images" :[]}
       for prod in order['order']:
         msg['images'].append("./img/"+getImageForProduct(prod))
-    return msg
+    yield msg
+    return
 
 
 def main(args):
