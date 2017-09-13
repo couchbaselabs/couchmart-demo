@@ -68,9 +68,9 @@ def n1ql_enabled():
   return 'indexes' in index_response and any(index['index'] == u'category' and index['status'] == u'Ready' for index in index_response['indexes'])
 
 
-LAST_ORDER_QUERY=("SELECT META(charlie).id as order_id, name, `order`" 
-                  "FROM charlie WHERE type == \"order\" "
-                  "ORDER by ts DESC LIMIT 1")
+LAST_ORDER_QUERY=('SELECT META().id as order_id, name, `order` FROM `{}`'
+                  'WHERE type = "order" AND name IS NOT MISSING AND `order` '
+                  'IS NOT MISSING AND ts IS NOT MISSING ORDER by ts DESC LIMIT 1'.format(bucket_name))
 
 def getLatestOrders():
     last_orders = yield bucket.n1qlQueryAll(LAST_ORDER_QUERY)
