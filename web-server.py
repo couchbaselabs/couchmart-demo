@@ -83,9 +83,10 @@ class LiveOrdersWebSocket(tornado.websocket.WebSocketHandler):
     print("WebSocket closed")
     self.callback.stop()
 
-  LAST_ORDER_QUERY=("SELECT META(charlie).id as order_id, name, `order`" 
-                  "FROM charlie WHERE type == \"order\" "
-                  "ORDER by ts DESC LIMIT 1")
+  LAST_ORDER_QUERY = ('SELECT META().id as order_id, name, `order` FROM `{}` '
+                      'WHERE type = "order" AND name IS NOT MISSING AND `order` '
+                      'IS NOT MISSING AND ts IS NOT MISSING ORDER by ts DESC LIMIT 1'.format(
+    bucket_name))
   @tornado.gen.coroutine
   def send_orders(self):
     last_orders = yield bucket.n1qlQueryAll(self.LAST_ORDER_QUERY)
