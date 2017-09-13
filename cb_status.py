@@ -9,6 +9,7 @@ HOST="http://{}:8091".format(settings.NODES[0])
 BUCKET_URL = HOST + "/pools/default/buckets"
 NODE_URL = HOST + "/pools/default/serverGroups"
 INDEX_URL = HOST + "/indexStatus"
+SERVICE_URL = HOST + "/pools/default/nodeServices"
 FTS_URL = HOST.replace('8091', '8094') + "/api/index"
 USERNAME=settings.ADMIN_USER
 PASSWORD=settings.ADMIN_PASS
@@ -60,8 +61,8 @@ def getNodeStatus():
   return node_list
 
 def fts_enabled():
-  bucket_response = json.loads(get_URL(BUCKET_URL))
-  return any('fts' in node['services'] for bucket in bucket_response for node in bucket["nodes"])
+  response = json.loads(get_URL(SERVICE_URL))
+  return any('fts' in node['services'] for node in response["nodesExt"])
 
 def n1ql_enabled():
   index_response = json.loads(get_URL(INDEX_URL))
