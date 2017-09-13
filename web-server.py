@@ -19,7 +19,6 @@ import settings
 class NodeStatusHandler(tornado.web.RequestHandler):
   def get(self):
     self.render("www/index.html")
-    print "Got one"
 
 socket_list = []
 bucket_name=settings.BUCKET_NAME

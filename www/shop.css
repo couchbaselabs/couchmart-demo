@@ -125,7 +125,7 @@ img {
 }
 
 .products {
-    padding-top: 30px;
+    padding-top: 0px;
 }
 
 .submit-btn{
@@ -276,8 +276,12 @@ body {
 
 .search-container{
     margin: auto;
+    padding-bottom: 20px;
 }
 
+.type-btn-col {
+    padding-bottom: 20px;
+}
 .search-btn{
     background: transparent;
     border: none;

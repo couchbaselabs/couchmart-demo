@@ -65,7 +65,7 @@ def fts_enabled():
 
 def n1ql_enabled():
   index_response = json.loads(get_URL(INDEX_URL))
-  return 'indexes' in index_response and any(index['index'] == 'category' and index['status'] == u'Ready' for index in index_response['indexes'])
+  return 'indexes' in index_response and any(index['index'] == u'category' and index['status'] == u'Ready' for index in index_response['indexes'])
 
 
 LAST_ORDER_QUERY=("SELECT META(charlie).id as order_id, name, `order`" 
