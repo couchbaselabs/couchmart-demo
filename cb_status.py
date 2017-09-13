@@ -64,6 +64,12 @@ def fts_enabled():
   response = json.loads(get_URL(SERVICE_URL))
   return any('fts' in node['services'] for node in response["nodesExt"])
 
+def fts_node():
+  response = json.loads(get_URL(SERVICE_URL))
+  for node in response["nodesExt"]:
+    if 'fts' in node['services']:
+      return node['hostname']
+
 def n1ql_enabled():
   index_response = json.loads(get_URL(INDEX_URL))
   return 'indexes' in index_response and any(index['index'] == u'category' and index['status'] == u'Ready' for index in index_response['indexes'])

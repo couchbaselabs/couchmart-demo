@@ -119,27 +119,32 @@ class SubmitHandler(tornado.web.RequestHandler):
 
 class SearchHandler(tornado.web.RequestHandler):
   http_client = AsyncHTTPClient()
+  fts_node = None
 
   @tornado.gen.coroutine
   def get(self):
-    query = self.get_query_argument('q')
-    query = query.replace('"', r'')
-    query = urllib.quote(query)
-    terms = query.split()
-    query = ' '.join(["{}~1".format(term) for term in terms])
-    data = '{"query": {"query": "' + query + '"}, "highlight": null, "fields": null, "facets": null, "explain": false}'
-    request = HTTPRequest(url='http://{}:8094/api/index/English/query'.format(node), method='POST',
-                          body=data, auth_username='Administrator', auth_password='password', auth_mode='basic', user_agent="test",
-                          headers={'Content-Type': 'application/json'})
-    response = yield self.http_client.fetch(request)
+    if self.fts_node:
+      query = self.get_query_argument('q')
+      query = query.replace('"', r'')
+      query = urllib.quote(query)
+      terms = query.split()
+      query = ' '.join(["{}~1".format(term) for term in terms])
+      data = '{"query": {"query": "' + query + '"}, "highlight": null, "fields": null, "facets": null, "explain": false}'
+      request = HTTPRequest(url='http://{}:8094/api/index/English/query'.format(node), method='POST',
+                            body=data, auth_username='Administrator', auth_password='password', auth_mode='basic', user_agent="test",
+                            headers={'Content-Type': 'application/json'})
+      response = yield self.http_client.fetch(request)
 
-    response = tornado.escape.json_decode(response.body)
+      response = tornado.escape.json_decode(response.body)
 
-    final_results = []
-    for hit in response['hits']:
-      final_results.append(hit['id'])
+      final_results = []
+      for hit in response['hits']:
+        final_results.append(hit['id'])
 
-    self.write({'keys': final_results})
+      self.write({'keys': final_results})
+    else:
+      self.fts_node = cb_status.fts_node()
+      raise Exception()
 
 class FilterHandler(tornado.web.RequestHandler):
   @tornado.gen.coroutine
