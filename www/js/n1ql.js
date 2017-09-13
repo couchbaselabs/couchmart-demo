@@ -1,5 +1,5 @@
 var showing_front = false;
-window.onload = function BackgroundSocket(){
+window.onload = function N1QLSocket(){
   if ("WebSocket" in window) {
      // Let us open a web socket
      var ws = new WebSocket("ws://localhost:8888/liveorders");
@@ -38,8 +38,10 @@ window.onload = function BackgroundSocket(){
      ws.onclose = function()
      { 
         // websocket is closed.
-        $("#unhappy-shopper").text("Disconnected"); 
-        $("#happy-shopper").text("Disconnected");     };
+        $("#unhappy-shopper").text("Ready"); 
+        $("#happy-shopper").text("Please place an order");     
+        setTimeout(function(){N1QLSocket()}, 5000);
+};
   }
   
   else

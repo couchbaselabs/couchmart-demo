@@ -65,8 +65,6 @@ def fts_enabled():
 
 def n1ql_enabled():
   index_response = json.loads(get_URL(INDEX_URL))
-  print index_response
-
   return 'indexes' in index_response and any(index['index'] == 'category' and index['status'] == u'Ready' for index in index_response['indexes'])
 
 

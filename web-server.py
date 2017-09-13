@@ -16,7 +16,7 @@ from tornado.ioloop import PeriodicCallback
 import cb_status
 import settings
 
-class MainHandler(tornado.web.RequestHandler):
+class NodeStatusHandler(tornado.web.RequestHandler):
   def get(self):
     self.render("www/index.html")
     print "Got one"
@@ -156,10 +156,10 @@ class FilterHandler(tornado.web.RequestHandler):
 
 def make_app():
   return tornado.web.Application([
-    (r"/", MainHandler),
-    (r"/socket", CBStatusWebSocket),
+    (r"/", ShopHandler),
+    (r"/nodestatus", CBStatusWebSocket),
     (r"/liveorders", LiveOrdersWebSocket),
-    (r'/shop', ShopHandler),
+    (r'/nodes', NodeStatusHandler),
     (r'/submit_order', SubmitHandler),
     (r'/search', SearchHandler),
     (r'/filter', FilterHandler),

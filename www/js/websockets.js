@@ -1,11 +1,11 @@
-window.onload = function BackgroundSocket(){
+window.onload = function NodeStatusSocket(){
     if ("WebSocket" in window) {
        // Let us open a web socket
-       var ws = new WebSocket("ws://localhost:8888/socket");
+       var ws = new WebSocket("ws://localhost:8888/nodestatus");
 
        ws.onopen = function() {
           // Web Socket is connected, send data using send()
-          ws.send("Visualiser Connected");
+          ws.send("Node Status Connected");
        };
 
        ws.onmessage = function (evt) 
@@ -23,9 +23,6 @@ window.onload = function BackgroundSocket(){
             NODE_3_ALIVE=true;
             $("#node3").css({"background-color" : "rgba(179,108,219,1)"});
           }
-
-        console.log("received: "+msg['nodes'][2]['status'])
-  
      };
         
      ws.onclose = function()
@@ -35,7 +32,8 @@ window.onload = function BackgroundSocket(){
         $("#node2").css({"background-color" : "rgba(0,185,190,0.25)"});
         $("#node3").css({"background-color" : "rgba(179,108,219,0.25)"});
         $("#node4").css({"background-color" : "rgba(0,116,224,0.25)"});
-
+        // Try to reconnect in 5 seconds
+        setTimeout(function(){NodeStatusSocket()}, 5000);
 
      };
     }

@@ -146,15 +146,15 @@ $(document).ready(function(){
     });
 });
 
-window.onload = function BackgroundSocket(){
+window.onload = function ShopSocket(){
 
     if ("WebSocket" in window) {
        // Let us open a web socket
-       var ws = new WebSocket("ws://localhost:8888/socket");
+       var ws = new WebSocket("ws://localhost:8888/nodestatus");
 
        ws.onopen = function() {
           // Web Socket is connected, send data using send()
-          ws.send("Bingo Bango");
+          ws.send("Shop Socket Connected");
        };
 
        ws.onmessage = function (evt)
@@ -178,7 +178,7 @@ window.onload = function BackgroundSocket(){
      ws.onclose = function()
      {
         // websocket is closed.
-        alert("Connection is closed...");
+        setTimeout(function(){ShopSocket()}, 5000);
      };
     }
     else
