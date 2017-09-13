@@ -5,9 +5,13 @@ import tornado.ioloop
 import tornado.web
 import tornado.websocket
 import tornado.platform.twisted
+from tornado.httpclient import AsyncHTTPClient, HTTPRequest
+from base64 import b64encode
+import urllib
 tornado.platform.twisted.install()
 import time,random,datetime
 from txcouchbase.bucket import Bucket
+import couchbase.fulltext as FT
 
 from tornado.ioloop import PeriodicCallback
 
@@ -106,11 +110,26 @@ class SubmitHandler(tornado.web.RequestHandler):
     yield bucket.upsert(key, data)
 
 class SearchHandler(tornado.web.RequestHandler):
+  http_client = AsyncHTTPClient()
+
   @tornado.gen.coroutine
   def get(self):
-    yield tornado.gen.sleep(5)
-    self.write("yeah boiii")
+    query = self.get_query_argument('q')
+    query = query.replace('"', r'\"')
+    query = urllib.quote(query, safe='"\\')
+    data = '{"query": {"query": "' + query + '", "fuzziness":1}, "highlight": null, "fields": null, "facets": null, "explain": false}'
+    request = HTTPRequest(url='http://{}:8094/api/index/English/query'.format(node), method='POST',
+                          body=data, auth_username='Administrator', auth_password='password', auth_mode='basic', user_agent="test",
+                          headers={'Content-Type': 'application/json'})
+    response = yield self.http_client.fetch(request)
 
+    response = tornado.escape.json_decode(response.body)
+
+    final_results = []
+    for hit in response['hits']:
+      final_results.append(hit['id'])
+
+    self.write({'keys': final_results})
 
 class FilterHandler(tornado.web.RequestHandler):
   @tornado.gen.coroutine
@@ -118,7 +137,6 @@ class FilterHandler(tornado.web.RequestHandler):
     data = self.get_query_argument('type')
     results = yield bucket.n1qlQueryAll('SELECT meta().id FROM {} WHERE category = "{}"'
                                         .format(bucket_name, data))
-
     final_results=[]
     for row in results:
       final_results.append(row['id'])

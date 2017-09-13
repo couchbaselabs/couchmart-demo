@@ -334,6 +334,24 @@ body {
  * Affix and center
  */
 
+.rotate {
+    -webkit-animation: rotation 2s infinite linear;
+            animation: rotation 2s infinite linear;
+}
+
+@-webkit-keyframes rotation {
+    from {-webkit-transform: rotate(0deg);}
+    to   {-webkit-transform: rotate(359deg);}
+}
+
+@keyframes rotation {
+    from {-ms-transform: rotate(0deg);}
+    to   {-ms-transform: rotate(359deg);}
+
+    from {transform: rotate(0deg);}
+    to   {transform: rotate(359deg);}
+}
+
 @media (min-width: 40em) {
   /* Pull out the header and footer */
   .masthead {
