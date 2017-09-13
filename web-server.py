@@ -6,12 +6,10 @@ import tornado.web
 import tornado.websocket
 import tornado.platform.twisted
 from tornado.httpclient import AsyncHTTPClient, HTTPRequest
-from base64 import b64encode
 import urllib
 tornado.platform.twisted.install()
 import time,random,datetime
 from txcouchbase.bucket import Bucket
-import couchbase.fulltext as FT
 
 from tornado.ioloop import PeriodicCallback
 
@@ -123,9 +121,11 @@ class SearchHandler(tornado.web.RequestHandler):
   @tornado.gen.coroutine
   def get(self):
     query = self.get_query_argument('q')
-    query = query.replace('"', r'\"')
-    query = urllib.quote(query, safe='"\\')
-    data = '{"query": {"query": "' + query + '", "fuzziness":1}, "highlight": null, "fields": null, "facets": null, "explain": false}'
+    query = query.replace('"', r'')
+    query = urllib.quote(query)
+    terms = query.split()
+    query = ' '.join(["{}~1".format(term) for term in terms])
+    data = '{"query": {"query": "' + query + '"}, "highlight": null, "fields": null, "facets": null, "explain": false}'
     request = HTTPRequest(url='http://{}:8094/api/index/English/query'.format(node), method='POST',
                           body=data, auth_username='Administrator', auth_password='password', auth_mode='basic', user_agent="test",
                           headers={'Content-Type': 'application/json'})
