@@ -46,7 +46,7 @@ public class Application extends android.app.Application {
     private Boolean mLoginFlowEnabled = true;
     private Boolean mEncryptionEnabled = false;
     private Boolean mSyncEnabled = true;
-    private String mSyncGatewayUrl = "http://10.142.170.104:4984/charlie/";
+    private String mSyncGatewayUrl = "http://146.148.86.206:4984/charlie/";
     private Boolean mUsePrebuiltDb = false;
     private Boolean mConflictResolution = false;
 

@@ -344,10 +344,10 @@ public class TasksFragment extends Fragment {
             return;
         }
         Map<String, Object> properties = new HashMap<String, Object>();
-        properties.put("type", "basket");
-        properties.put("shopping-basket", shoppingBasket);
-        properties.put("createdAt", new Date());
-        properties.put("owner", "david");
+        properties.put("type", "order");
+        properties.put("order", shoppingBasket);
+        properties.put("ts", new Date());
+        properties.put("name", "david");
         String docId = "david" + "." + "basket" + UUID.randomUUID();
         Document document = mDatabase.getDocument(docId);
 //        Document document = mDatabase.createDocument();
