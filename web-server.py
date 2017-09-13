@@ -26,6 +26,7 @@ user=settings.USERNAME
 password=settings.PASSWORD
 node=settings.NODES[0]
 bucket=Bucket('couchbase://{0}/{1}'.format(node,bucket_name), username=user, password=password)
+fts_node = None
 
 class CBStatusWebSocket(tornado.websocket.WebSocketHandler):
   def open(self):
@@ -120,18 +121,21 @@ class SubmitHandler(tornado.web.RequestHandler):
 
 class SearchHandler(tornado.web.RequestHandler):
   http_client = AsyncHTTPClient()
-  fts_node = None
 
   @tornado.gen.coroutine
   def get(self):
-    if self.fts_node:
+    global fts_node
+    if not fts_node:
+      fts_node = cb_status.fts_node()
+
+    if fts_node:
       query = self.get_query_argument('q')
       query = query.replace('"', r'')
       query = urllib.quote(query)
       terms = query.split()
       query = ' '.join(["{}~1".format(term) for term in terms])
       data = '{"query": {"query": "' + query + '"}, "highlight": null, "fields": null, "facets": null, "explain": false}'
-      request = HTTPRequest(url='http://{}:8094/api/index/English/query'.format(node), method='POST',
+      request = HTTPRequest(url='http://{}:8094/api/index/English/query'.format(fts_node), method='POST',
                             body=data, auth_username=settings.ADMIN_USER, auth_password=settings.ADMIN_PASS, auth_mode='basic',
                             headers={'Content-Type': 'application/json'})
       response = yield self.http_client.fetch(request)
@@ -144,8 +148,9 @@ class SearchHandler(tornado.web.RequestHandler):
 
       self.write({'keys': final_results})
     else:
-      self.fts_node = cb_status.fts_node()
-      raise Exception()
+      raise Exception('No FTS node found')
+
+
 
 class FilterHandler(tornado.web.RequestHandler):
   @tornado.gen.coroutine
