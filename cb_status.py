@@ -28,7 +28,7 @@ def getImageForProduct(product):
   return None
 
 
-def get_URL(target_url):
+def get_URL(target_url, raise_exception=False):
   while True:
     try:
       req = urllib2.Request(target_url)
@@ -36,6 +36,8 @@ def get_URL(target_url):
       return urllib2.urlopen(req, timeout=0.1).read()
     except Exception as e:
       print ("Could not retrieve URL: " + str(target_url) + str(e))
+      if raise_exception:
+        raise
       time.sleep(1)
 
 def getBucketStatus():
@@ -71,9 +73,9 @@ def fts_enabled():
   node_to_query = fts_node()
   if not node:
     return False
-  
+
   try:
-    response = json.loads(get_URL(FTS_URL.format(node_to_query, 'English')))
+    response = json.loads(get_URL(FTS_URL.format(node_to_query, 'English'), raise_exception=True))
   except Exception:
     return False
   else:
