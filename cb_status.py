@@ -35,9 +35,9 @@ def get_URL(target_url, raise_exception=False):
       req.add_header("Authorization", "Basic %s" % AUTH_STRING)   
       return urllib2.urlopen(req, timeout=0.1).read()
     except Exception as e:
-      print ("Could not retrieve URL: " + str(target_url) + str(e))
       if raise_exception:
         raise
+      print ("Could not retrieve URL: " + str(target_url) + str(e))
       time.sleep(1)
 
 def getBucketStatus():
@@ -75,7 +75,8 @@ def fts_enabled():
     return False
 
   try:
-    response = json.loads(get_URL(FTS_URL.format(node_to_query, 'English'), raise_exception=True))
+    response = json.loads(get_URL(FTS_URL.format(node_to_query, 'English'),
+                                  raise_exception=True))
   except Exception:
     return False
   else:
