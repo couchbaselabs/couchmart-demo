@@ -349,13 +349,14 @@ public class TasksFragment extends Fragment {
         properties.put("type", "order");
         properties.put("order", shoppingBasket);
         properties.put("ts", MOBILE_TS_BIAS + (long) new Date().getTime() / 1000);
-        properties.put("name", "david");
+        properties.put("name", "Couchbase Demo Phone");
         String docId = "david" + "." + "basket" + UUID.randomUUID();
         Document document = mDatabase.getDocument(docId);
 //        Document document = mDatabase.createDocument();
         try {
              document.putProperties(properties);
             Toast.makeText(getContext(), "Order Submitted!", Toast.LENGTH_LONG).show();
+            shoppingBasket.clear();
 
         } catch (CouchbaseLiteException e) {
             e.printStackTrace();

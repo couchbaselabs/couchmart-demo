@@ -15,6 +15,7 @@ from tornado.ioloop import PeriodicCallback
 
 import cb_status
 import settings
+from collections import deque
 
 class NodeStatusHandler(tornado.web.RequestHandler):
   def get(self):
@@ -69,10 +70,11 @@ class CBStatusWebSocket(tornado.websocket.WebSocketHandler):
 
 class LiveOrdersWebSocket(tornado.websocket.WebSocketHandler):
   def open(self):
-    print self
+    self.RECENT_ORDERS=deque(maxlen=50)
+    self.NEXT_CUSTOMER=0
+    self.LATEST_TS=0
     if self not in socket_list:
       socket_list.append(self)
-      self.red = 255
       print("WebSocket opened")
       self.callback = tornado.ioloop.PeriodicCallback(self.send_orders,5000)
       self.callback.start()
@@ -84,19 +86,30 @@ class LiveOrdersWebSocket(tornado.websocket.WebSocketHandler):
     print("WebSocket closed")
     self.callback.stop()
 
-  LAST_ORDER_QUERY = ('SELECT META().id as order_id, name, `order` FROM `{}` '
-                      'WHERE type = "order" AND name IS NOT MISSING AND `order` '
-                      'IS NOT MISSING AND ts IS NOT MISSING ORDER by ts DESC LIMIT 1'.format(
-    bucket_name))
   @tornado.gen.coroutine
   def send_orders(self):
-    last_orders = yield bucket.n1qlQueryAll(self.LAST_ORDER_QUERY)
-    msg = {}
-    for order in last_orders:
-      msg = {"name": order['name'], "images" :[]}
-      for prod in order['order']:
-        msg['images'].append("./img/"+cb_status.getImageForProduct(prod))
-    self.write_message(msg)  
+    res = yield bucket.queryAll(settings.DDOC_NAME, settings.VIEW_NAME, 
+                                include_docs=True, descending=False, limit=50,startkey=self.LATEST_TS)
+    new_order=False
+    for order in res:
+      new_order=True
+      self.RECENT_ORDERS.appendleft(order.doc.value)
+      print order.key, order.doc.value['name']
+
+    if new_order:
+      self.NEXT_CUSTOMER = 0 # back to the start
+      self.LATEST_TS = self.RECENT_ORDERS[0]['ts'] + 1
+    elif self.NEXT_CUSTOMER >= (len(self.RECENT_ORDERS) - 1):
+      self.NEXT_CUSTOMER = 0 # back to the start
+    else:
+      self.NEXT_CUSTOMER += 1
+
+    if len(self.RECENT_ORDERS) > 0:
+      display_order = self.RECENT_ORDERS[self.NEXT_CUSTOMER]
+      msg = {"name": display_order['name'], "images" :[]}
+      for prod in display_order['order']:
+          msg['images'].append("./img/"+cb_status.getImageForProduct(prod))
+      self.write_message(msg)  
     
 class ShopHandler(tornado.web.RequestHandler):
   @tornado.gen.coroutine

@@ -56,6 +56,25 @@ PRODUCTS = [
 #   },
 #   "type": "task"
 # }
+def check_and_create_view():
+    DESIGN_DOC = {
+    'views': {
+        'by_timestamp': {
+            'map': '''
+            function(doc, meta) {
+                if (doc.type && doc.type== "order" && doc.ts) {
+                    emit(doc.ts, null)
+                }
+                }
+            '''
+            }
+        }
+    }
+    mgr = SDK_CLIENT.bucket_manager()
+    mgr.design_create(settings.DDOC_NAME, DESIGN_DOC, use_devmode=False)
+    res = SDK_CLIENT.query(settings.DDOC_NAME, settings.VIEW_NAME)
+    for row in res:
+        print row
 
 def do_queries():
     for row in SDK_CLIENT.n1ql_query('SELECT  name,stock FROM charlie WHERE type == "product" ORDER BY stock DESC LIMIT 5'):
@@ -93,3 +112,4 @@ def add_products():
 if __name__=='__main__':
     add_products()
     do_queries()
+    check_and_create_view()
