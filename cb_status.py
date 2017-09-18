@@ -10,7 +10,7 @@ BUCKET_URL = HOST + "/pools/default/buckets"
 NODE_URL = HOST + "/pools/default/serverGroups"
 INDEX_URL = HOST + "/indexStatus"
 SERVICE_URL = HOST + "/pools/default/nodeServices"
-FTS_URL = HOST.replace('8091', '8094') + "/api/index"
+FTS_URL = "http://{}:8094/api/index/{}"
 USERNAME=settings.ADMIN_USER
 PASSWORD=settings.ADMIN_PASS
 AUTH_STRING = base64.encodestring('%s:%s' % (USERNAME, PASSWORD)).replace('\n', '')
@@ -60,16 +60,24 @@ def getNodeStatus():
     node_list.append(node_status)    
   return node_list
 
-def fts_enabled():
-  response = json.loads(get_URL(SERVICE_URL))
-  return any('fts' in node['services'] for node in response["nodesExt"])
-
 def fts_node():
   response = json.loads(get_URL(SERVICE_URL))
   for node in response["nodesExt"]:
     if 'fts' in node['services']:
       return node['hostname']
   return None
+
+def fts_enabled():
+  node_to_query = fts_node()
+  if not node:
+    return False
+  
+  try:
+    response = json.loads(get_URL(FTS_URL.format(node_to_query, 'English')))
+  except Exception:
+    return False
+  else:
+    return True
 
 def n1ql_enabled():
   index_response = json.loads(get_URL(INDEX_URL))
