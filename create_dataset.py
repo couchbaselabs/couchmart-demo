@@ -21,7 +21,7 @@ LIST_DOC="david.all_the_products"
 PRODUCTS = [
 { "name": "fish fingers", "description": "Only the best at the captain's table", "price": 1.00,"category": "meat", "image": "fish_fingers.png", "stock": 100},
 { "name": "burger", "description": "Mmmm. That IS a tasty burger", "price": 1.00,"category": "meat", "image": "burger.png","stock": 100},
-{ "name": "ham", "description": "Du jambon", "price": 1.00,"category": "dairy", "image": "ham.png", "stock": 100},
+{ "name": "ham", "description": "Du jambon", "price": 1.00,"category": "meat", "image": "ham.png", "stock": 100},
 { "name": "bacon", "description": "Smashing in a butty", "price": 1.00,"category": "meat", "image": "bacon.png", "stock": 100},
 { "name": "sausages", "description": "A string of bangers", "price": 1.00,"category": "meat", "image": "sausages.png", "stock": 100},
 { "name": "whisky", "description": "A wee dram", "price": 1.00,"category": "drinks", "image": "whisky.png", "stock": 100},
@@ -30,20 +30,19 @@ PRODUCTS = [
 { "name": "red wine", "description": "Vin Rouge", "price": 1.00,"category": "drinks", "image": "red_wine.png", "stock": 100},
 { "name": "beer", "description": "amber nectar", "price": 1.00,"category": "drinks", "image": "beer.png", "stock": 100},
 { "name": "bonbons", "description": "What's French for....?", "price": 1.00,"category": "snacks", "image": "bonbons.png", "stock": 100},
-{ "name": "cookie", "description": "chocloate chip", "price": 1.00,"category": "dairy", "image": "cookie.png", "stock": 100},
+{ "name": "cookie", "description": "chocloate chip", "price": 1.00,"category": "snacks", "image": "cookie.png", "stock": 100},
 { "name": "carambars", "description": "Eat Your Sweet!", "price": 1.00,"category": "snacks", "image": "carambars.png", "stock": 100},
 { "name": "chocolate", "description": "milk, dark or white", "price": 1.00,"category": "snacks", "image": "chocolate.png", "stock": 100},
 { "name": "crisps", "description": "A flavour for everyone", "price": 1.00,"category": "snacks", "image": "crisps.png", "stock": 100},
 { "name": "butter", "description": "Put on a good spread", "price": 1.00,"category": "basics", "image": "butter.png", "stock": 100},
-{ "name": "cheese", "description": "Smelly pong", "price": 1.00,"category": "basics", "image": "cheese.png", "stock": 100},
-{ "name": "milk", "description": "No sense crying over this", "price": 1.00,"category": "basics", "image": "milk.png", "stock": 100},
+{ "name": "cheese", "description": "Smelly pong", "price": 1.00,"category": "dairy", "image": "cheese.png", "stock": 100},
+{ "name": "milk", "description": "No sense crying over this", "price": 1.00,"category": "dairy", "image": "milk.png", "stock": 100},
 { "name": "eggs", "description": "Don't put all these in one basket", "price": 1.00,"category": "basics", "image": "eggs.png", "stock": 100},
 { "name": "bread", "description": "The best thing since sliced...", "price": 1.00,"category": "basics", "image": "bread.png", "stock": 100},
 { "name": "bananas", "description": "You'll go crazy for these bananas", "price": 1.00,"category": "fruit", "image": "bananas.png", "stock": 100},
 { "name": "pineapples", "description": "Totally tropical taste", "price": 1.00,"category": "fruit", "image": "pineapple.png", "stock": 100},
 { "name": "strawberries", "description": "Go well with cream at Wimbledon", "price": 1.00,"category": "fruit", "image": "strawberries.png", "stock": 100},
-{ "name": "apples", "description": "Granny smiths and golden delicious", "price": 1.00,"category": "fruit", "image": "apples.png", "stock": 100},
-{ "name": "oranges", "description": "Not the only fruit", "price": 1.00,"category": "fruit", "image": "oranges.png", "stock": 100}]
+{ "name": "apples", "description": "Granny smiths and golden delicious", "price": 1.00,"category": "fruit", "image": "apples.png", "stock": 100},]
 
 
 
