@@ -81,6 +81,8 @@ public class TasksFragment extends Fragment {
     private static final int REQUEST_TAKE_PHOTO = 1;
     private static final int REQUEST_CHOOSE_PHOTO = 2;
     private static final int THUMBNAIL_SIZE = 150;
+    private static final int MOBILE_TS_BIAS = 30;
+
 
     private static int itemsSelected = 0;
     private static List<String> shoppingBasket = new ArrayList<String>();
@@ -346,7 +348,7 @@ public class TasksFragment extends Fragment {
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put("type", "order");
         properties.put("order", shoppingBasket);
-        properties.put("ts", new Date());
+        properties.put("ts", MOBILE_TS_BIAS + (long) new Date().getTime() / 1000);
         properties.put("name", "david");
         String docId = "david" + "." + "basket" + UUID.randomUUID();
         Document document = mDatabase.getDocument(docId);
