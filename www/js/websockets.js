@@ -1,4 +1,8 @@
 window.onload = function NodeStatusSocket(){
+
+    $(".azure").hide();
+
+
     if ("WebSocket" in window) {
        // Let us open a web socket
        var ws = new WebSocket("ws://" + location.host + "/nodestatus");
@@ -32,6 +36,9 @@ window.onload = function NodeStatusSocket(){
         $("#node2").css({"background-color" : "rgba(0,185,190,0.25)"});
         $("#node3").css({"background-color" : "rgba(179,108,219,0.25)"});
         $("#node4").css({"background-color" : "rgba(0,116,224,0.25)"});
+
+        $(".azure").show();
+
         // Try to reconnect in 5 seconds
         setTimeout(function(){NodeStatusSocket()}, 5000);
 

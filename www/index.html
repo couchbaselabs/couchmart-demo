@@ -12,21 +12,29 @@
  
    <body>
       <div class="container">
-        <div class="row">
-          <div class="col-md-3">
+        <div class="row aws">
+          <div class="col-md-2">
               <canvas class="node-visualiser" id="node1">
                 Your browser does not support the HTML5 canvas tag.</canvas>
           </div>
-          <div class="col-md-3">
+          <div class="col-md-2">
               <canvas class="node-visualiser" id="node2">
               Your browser does not support the HTML5 canvas tag.</canvas>
           </div>
-          <div class="col-md-3">
+          <div class="col-md-2">
             <canvas class="node-visualiser" id="node3">
              Your browser does not support the HTML5 canvas tag.</canvas>
           </div>
-          <div class="col-md-3">
+          <div class="col-md-2">
               <canvas class="node-visualiser" id="node4">
+              Your browser does not support the HTML5 canvas tag.</canvas>
+          </div>
+          <div class="col-md-2">
+              <canvas class="node-visualiser" id="node5">
+              Your browser does not support the HTML5 canvas tag.</canvas>
+          </div>
+          <div class="col-md-2">
+              <canvas class="node-visualiser" id="aws-badge">
               Your browser does not support the HTML5 canvas tag.</canvas>
           </div>
         </div>
@@ -36,18 +44,40 @@
             <canvas id="activity" width=800px height=400px style="border:1px solid #d300d3;"></canvas>
           </div>
         </div>
+
+
+        <div class="row azure">
+          <div class="col-md-2">
+              <canvas class="node-visualiser" id="node1">
+                Your browser does not support the HTML5 canvas tag.</canvas>
+          </div>
+          <div class="col-md-2">
+              <canvas class="node-visualiser" id="node2">
+              Your browser does not support the HTML5 canvas tag.</canvas>
+          </div>
+          <div class="col-md-2">
+            <canvas class="node-visualiser" id="node3">
+             Your browser does not support the HTML5 canvas tag.</canvas>
+          </div>
+          <div class="col-md-2">
+              <canvas class="node-visualiser" id="node4">
+              Your browser does not support the HTML5 canvas tag.</canvas>
+          </div>
+          <div class="col-md-2">
+              <canvas class="node-visualiser" id="node5">
+              Your browser does not support the HTML5 canvas tag.</canvas>
+          </div>
+          <div class="col-md-2">
+              <canvas class="node-visualiser" id="azure-badge">
+              Your browser does not support the HTML5 canvas tag.</canvas>
+          </div>
+        </div>
+
+
+
       </div>
 
-
-
     <br>
-
-<script>
-var node4 = document.getElementById("node4");
-node4.addEventListener('click', function(){
-    node4.style.backgroundColor = "#FF0000";
-});
-</script>
 
 
 <script src="/js/websockets.js"></script>

@@ -75,7 +75,6 @@ hr {
 .node-visualiser {
   width: 170px;
   height: 200px;
-  background-image: url("img/server_icon.png");
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;  
@@ -85,18 +84,36 @@ hr {
 
 #node1{
   background-color: rgba(235,73,113,1);
+  background-image: url("img/server_icon.png");
+
 }
 #node2{
   background-color: rgba(0,185,190,1);
+  background-image: url("img/server_icon.png");
 }
 
 #node3{
   background-color: rgba(179,108,219,1);
+  background-image: url("img/server_icon.png");
 }
 #node4{
   background-color: rgba(0,116,224,1);
-;
+  background-image: url("img/query_server_icon.png");
+
 }
+#node5{
+  background-color: rgba(252, 156, 12,1);
+  background-image: url("img/fts_server_icon.png");
+
+}
+#aws-badge{
+    background-image: url("img/ec2_logo.jpg");
+}
+
+#azure-badge{
+    background-image: url("img/azure.png");
+}
+
 
 .shop-item{
 height: 150px;
