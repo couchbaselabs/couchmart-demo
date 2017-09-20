@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Couchmart</string>
+    <string name="app_name">CouchMart</string>
     <string name="title_list_detail">List Detail</string>
     <string name="title_activity_login">Sign in</string>
 

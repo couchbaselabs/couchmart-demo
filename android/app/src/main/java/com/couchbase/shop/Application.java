@@ -40,7 +40,7 @@ import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static java.lang.Math.min;
 
 public class Application extends android.app.Application {
-    public static final String TAG = "Couchmart";
+    public static final String TAG = "CouchMart";
     public static final String LOGIN_FLOW_ENABLED = "login_flow_enabled";
 
     private Boolean mLoginFlowEnabled = true;
