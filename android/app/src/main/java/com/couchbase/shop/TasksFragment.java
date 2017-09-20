@@ -115,7 +115,7 @@ public class TasksFragment extends Fragment {
         fab.setOnClickListener(new android.view.View.OnClickListener() {
             @Override
             public void onClick(android.view.View view) {
-                submitShoppingBasket();
+                submitShoppingBasket(mListView);
             }
         });
 
@@ -338,7 +338,7 @@ public class TasksFragment extends Fragment {
         }
     }
 
-    private void submitShoppingBasket() {
+    private void submitShoppingBasket(ListView view) {
         if (itemsSelected != 5)
         {
             int moreItems = 5 - itemsSelected;
@@ -357,6 +357,8 @@ public class TasksFragment extends Fragment {
              document.putProperties(properties);
             Toast.makeText(getContext(), "Order Submitted!", Toast.LENGTH_LONG).show();
             shoppingBasket.clear();
+            itemsSelected = 0;
+            view.invalidateViews();
 
         } catch (CouchbaseLiteException e) {
             e.printStackTrace();
