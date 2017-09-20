@@ -17,7 +17,8 @@
             android:id="@+id/list"
             style="@android:style/Widget.Holo.Light.ListView"
             android:layout_width="match_parent"
-            android:layout_height="464dp"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="60dp"
             android:background="#ffffff" />
 
     </FrameLayout>
