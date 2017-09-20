@@ -73,13 +73,13 @@ hr {
 }
 
 .node-visualiser {
-  width: 170px;
   height: 200px;
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;  
   background-origin: content-box;
-  padding: 20px;
+  background-clip: padding-box;
+  border: 10px solid transparent;
 }
 
 #node1{
