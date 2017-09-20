@@ -1,8 +1,18 @@
 function setAlpha(node_elem, new_alpha){
-  var bg = $(node_elem).css('backgroundColor');
-  var rgb_array = bg.slice(4).split(',');
-  var newBg = 'rgba('+rgb_array[0]+','+parseInt(rgb_array[1])+','+parseInt(rgb_array[2])+','+new_alpha+')';
-  $(node_elem).css('backgroundColor',newBg);
+  var bg = $(node_elem).css('background-color');
+  if (bg.startsWith("rgba(")){
+    strip_chars=5;
+  }
+  else
+  {
+    strip_chars=4;
+  }
+
+  var rgb_array = bg.slice(strip_chars).split(',');
+  var newBg = 'rgba('+parseInt(rgb_array[0])+','+parseInt(rgb_array[1])+','+parseInt(rgb_array[2])+','+new_alpha+')';
+  $(node_elem).css('background-color',newBg);
+  console.log (bg, rgb_array, newBg);
+
 }
 
 window.onload = function NodeStatusSocket(){

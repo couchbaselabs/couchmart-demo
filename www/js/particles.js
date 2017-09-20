@@ -20,10 +20,7 @@ MIN_SPEED=0.1
 MAX_SPEED = 4
 MIN_SIZE = 5
 MAX_SIZE = 15
-NODE_1_ALIVE=true
-NODE_2_ALIVE=true
-NODE_3_ALIVE=true
-NODE_4_ALIVE=true
+MAN_DOWN=false
 
 particles = []
 
@@ -94,14 +91,11 @@ function drawCircles(){
   ctx.clearRect(0, 0, c.width,c.height);
   for (i=0; (i< LIVE_PARTICLES && i < MAX_PARTICLES);i++)
   {
-  if ( (NODE_1_ALIVE && (i % 4 == 0)) ||
-       (NODE_2_ALIVE && (i % 4 == 1)) ||  
-       (NODE_3_ALIVE && (i % 4 == 2)) ||  
-       (NODE_4_ALIVE && (i % 4 == 3)) )  
+  if (!MAN_DOWN || (i % 3 != 0))  
       {
       particles[i].update();
-      particles[i].draw();
     }
+    particles[i].draw();
   }
 }
 
