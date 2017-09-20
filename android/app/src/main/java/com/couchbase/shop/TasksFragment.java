@@ -10,6 +10,8 @@ import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
@@ -201,12 +203,10 @@ public class TasksFragment extends Fragment {
                         getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 convertView = inflater.inflate(R.layout.view_task, null);
             }
-
             final Document product = (Document) getItem(position);
             if (product == null || product.getCurrentRevision() == null) {
                 return convertView;
             }
-
             ImageView imageView = (ImageView) convertView.findViewById(R.id.photo);
             String productName = (String) product.getProperty("product");
             switch (productName) {
@@ -302,7 +302,13 @@ public class TasksFragment extends Fragment {
 
             TextView text = (TextView) convertView.findViewById(R.id.text);
             text.setText((String) product.getProperty("product"));
-
+            if (isEnabled(position)) {
+                text.setPaintFlags(text.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
+                imageView.setColorFilter(null);
+            } else {
+                text.setPaintFlags(text.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                imageView.setColorFilter(Color.argb(200,200,200,200));
+            }
             final CheckBox checkBox = (CheckBox) convertView.findViewById(R.id.checked);
             checkBox.setChecked(shoppingBasket.contains((product.getId())));
             checkBox.setEnabled(isEnabled(position));
