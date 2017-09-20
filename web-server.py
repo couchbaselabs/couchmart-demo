@@ -51,21 +51,9 @@ class CBStatusWebSocket(tornado.websocket.WebSocketHandler):
     nodes = cb_status.getNodeStatus()
     fts_enabled = cb_status.fts_enabled()
     n1ql_enabled = cb_status.n1ql_enabled()
-    msg = {"nodes": nodes, 'fts': fts_enabled, 'n1ql': n1ql_enabled}
+    xdcr_enabled = cb_status.xdcr_enabled()
+    msg = {"nodes": nodes, 'fts': fts_enabled, 'n1ql': n1ql_enabled, 'xdcr': xdcr_enabled}
     self.write_message(msg)
-
-  def change_colour(self):
-    self.red = random.randint(0,255)
-    self.green = random.randint(0,255)
-    self.blue = random.randint(0,255)
-
-    col =  '#%02x%02x%02x' % (self.red, self.green, self.blue)
-    status_cols = {'node1': col,
-                   'node2': "#FFFF00",
-                   'node3': "#FF00FF",
-                   'node4': "#FFFFFF",
-                  }
-    self.write_message(status_cols)
 
 
 class LiveOrdersWebSocket(tornado.websocket.WebSocketHandler):

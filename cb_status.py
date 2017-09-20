@@ -11,6 +11,7 @@ NODE_URL = HOST + "/pools/default/serverGroups"
 INDEX_URL = HOST + "/indexStatus"
 SERVICE_URL = HOST + "/pools/default/nodeServices"
 FTS_URL = "http://{}:8094/api/index/{}"
+XDCR_URL = HOST + "/pools/default/remoteClusters"
 USERNAME=settings.ADMIN_USER
 PASSWORD=settings.ADMIN_PASS
 AUTH_STRING = base64.encodestring('%s:%s' % (USERNAME, PASSWORD)).replace('\n', '')
@@ -46,20 +47,26 @@ def getBucketStatus():
 
 # Returns a list of nodes and their statuses
 def getNodeStatus():
-  node_list = []
+  default_status = { "hostname": "n/a", "ops": 0, "status": "down"}
+  node_list = [dict(default_status) for x in range(5)]
+  kv_nodes = index = 0
   node_response   = json.loads(get_URL(NODE_URL))
   for node in node_response['groups'][0]['nodes']:
-    node_status = { "hostname": node['hostname'], "ops": 0}
+    if "kv" in node['services']:
+      index = kv_nodes
+      node_list[index]['ops'] = node['interestingStats']['cmd_get']
+      kv_nodes += 1
+    elif "n1ql" in node['services']:
+      index = 3
+    elif "fts" in node['services']:
+      index = 4
+    node_list[index]['hostname'] = node['hostname']
     if node['status'] != "healthy" and node['clusterMembership'] == "active":
-      node_status['status'] = "down"
+      node_list[index]['status'] = "down"
     elif node['clusterMembership'] != "active":
-       node_status['status'] = "failed"
+       node_list[index]['status'] = "failed"
     else:
-      node_status['status'] = "ok"
-      if "kv" in node['services']:
-        node_status['ops'] = node['interestingStats']['cmd_get']
-
-    node_list.append(node_status)    
+      node_list[index]['status'] = "ok"
   return node_list
 
 def fts_node():
@@ -86,6 +93,10 @@ def n1ql_enabled():
   index_response = json.loads(get_URL(INDEX_URL))
   return 'indexes' in index_response and any(index['index'] == u'category' and index['status'] == u'Ready' for index in index_response['indexes'])
 
+
+def xdcr_enabled():
+  xdcr_response = json.loads(get_URL(XDCR_URL))
+  return len(xdcr_response) > 0
 
 LAST_ORDER_QUERY=('SELECT META().id as order_id, name, `order` FROM `{}`'
                   'WHERE type = "order" AND name IS NOT MISSING AND `order` '

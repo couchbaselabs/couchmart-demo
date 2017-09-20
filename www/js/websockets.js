@@ -1,7 +1,13 @@
+function setAlpha(node_elem, new_alpha){
+  var bg = $(node_elem).css('backgroundColor');
+  var rgb_array = bg.slice(4).split(',');
+  var newBg = 'rgba('+rgb_array[0]+','+parseInt(rgb_array[1])+','+parseInt(rgb_array[2])+','+new_alpha+')';
+  $(node_elem).css('backgroundColor',newBg);
+}
+
 window.onload = function NodeStatusSocket(){
 
     $(".azure").hide();
-
 
     if ("WebSocket" in window) {
        // Let us open a web socket
@@ -15,29 +21,40 @@ window.onload = function NodeStatusSocket(){
        ws.onmessage = function (evt) 
        { 
           var msg = JSON.parse(evt.data);
-          LIVE_PARTICLES = msg['nodes'][0]['ops'] + msg['nodes'][1]['ops'] + msg['nodes'][2]['ops'];
-          if (msg['nodes'][2]['status'] == "down"){
-            $("#node3").css({"background-color" : "rgba(179,108,219,0.25)"});
-            NODE_3_ALIVE=false;
+          total_ops = 0;
+          for (i = 0; i < msg['nodes'].length; i++){
+            node = msg['nodes'][i];
+            node_elem = "#node" + (i+1);
+            if (node['status'] == "down"){
+              $(node_elem).hide();
+            }
+            else if (node['status'] == "failed"){
+              setAlpha(node_elem,0.25);
+              $(node_elem).show();
+            }
+            else {
+              setAlpha(node_elem,1);
+              $(node_elem).show();
+            }
+            total_ops += node['ops'];
           }
-          else if (msg['nodes'][2]['status'] == "failed"){
-            NODE_3_ALIVE=true;
+          LIVE_PARTICLES = total_ops;
+          if (msg['xdcr']){
+             $('.azure').show();
           }
-           else if (msg['nodes'][2]['status'] == "ok"){
-            NODE_3_ALIVE=true;
-            $("#node3").css({"background-color" : "rgba(179,108,219,1)"});
+          else{
+             $('.azure').hide();
           }
      };
         
      ws.onclose = function()
      {  
         LIVE_PARTICLES = 0;
-        $("#node1").css({"background-color" : "rgba(235,73,113,0.25)"});
-        $("#node2").css({"background-color" : "rgba(0,185,190,0.25)"});
-        $("#node3").css({"background-color" : "rgba(179,108,219,0.25)"});
-        $("#node4").css({"background-color" : "rgba(0,116,224,0.25)"});
-
-        $(".azure").show();
+        for (i= 0; i < 5; i++){
+           node_elem = "#node" + (i+1);
+           setAlpha(node_elem,0.25);
+        }
+        $(".azure").hide();
 
         // Try to reconnect in 5 seconds
         setTimeout(function(){NodeStatusSocket()}, 5000);
