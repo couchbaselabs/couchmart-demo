@@ -312,6 +312,14 @@ public class TasksFragment extends Fragment {
                 }
             });
 
+            convertView.setOnClickListener(new android.view.View.OnClickListener() {
+                @Override
+                public void onClick(android.view.View view) {
+                    checkBox.setChecked(!checkBox.isChecked());
+                    updateCheckedStatus(product, checkBox);
+                }
+            });
+
             return convertView;
         }
 
