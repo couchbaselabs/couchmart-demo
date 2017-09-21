@@ -292,14 +292,6 @@ public class TasksFragment extends Fragment {
                     imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_note));
             }
 
-
-            imageView.setOnClickListener(new android.view.View.OnClickListener() {
-                @Override
-                public void onClick(android.view.View v) {
-                    displayAttachImageDialog(product);
-                }
-            });
-
             TextView text = (TextView) convertView.findViewById(R.id.text);
             text.setText((String) product.getProperty("product"));
             if (isEnabled(position)) {
