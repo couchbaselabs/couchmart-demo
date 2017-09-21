@@ -197,7 +197,7 @@ public class TasksFragment extends Fragment {
         }
 
         @Override
-        public android.view.View getView(int position, android.view.View convertView, ViewGroup parent) {
+        public android.view.View getView(final int position, android.view.View convertView, ViewGroup parent) {
             if (convertView == null) {
                 LayoutInflater inflater = (LayoutInflater) parent.getContext().
                         getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -315,8 +315,10 @@ public class TasksFragment extends Fragment {
             convertView.setOnClickListener(new android.view.View.OnClickListener() {
                 @Override
                 public void onClick(android.view.View view) {
-                    checkBox.setChecked(!checkBox.isChecked());
-                    updateCheckedStatus(product, checkBox);
+                    if (isEnabled(position)) {
+                        checkBox.setChecked(!checkBox.isChecked());
+                        updateCheckedStatus(product, checkBox);
+                    }
                 }
             });
 
