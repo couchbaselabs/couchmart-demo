@@ -5,6 +5,7 @@ import couchbase
 import uuid
 import datetime
 import settings
+import random
 
 bucket_name=settings.BUCKET_NAME
 user=settings.USERNAME
@@ -14,7 +15,6 @@ SDK_CLIENT = Bucket('couchbase://{0}/{1}'.format(node,bucket_name), username=use
 
 SDK_CLIENT.timeout = 15
 
-# LIST_DOC="david.3501d7e0-9057-4c74-8de0-259ac8af09ee"
 LIST_DOC="david.all_the_products"
 
 
@@ -46,16 +46,6 @@ PRODUCTS = [
 
 
 
-# {
-#   "complete": false,
-#   "createdAt": 1504112965508,
-#   "task": "Help",
-#   "taskList": {
-#     "id": "david.fd2679d9-8647-45d4-91e2-8963385f3a34",
-#     "owner": "david"
-#   },
-#   "type": "task"
-# }
 def check_and_create_view():
     DESIGN_DOC = {
     'views': {
@@ -76,12 +66,6 @@ def check_and_create_view():
     for row in res:
         print row
 
-def do_queries():
-    for row in SDK_CLIENT.n1ql_query('SELECT  name,stock FROM charlie WHERE type == "product" ORDER BY stock DESC LIMIT 5'):
-        print row
-    for row in  SDK_CLIENT.n1ql_query('SELECT META(charlie).id as order_id, name, `order` \
-                                  FROM charlie where type == "order" ORDER by ts DESC LIMIT 1'):
-        print row
 
 list_doc = {"type": "product-list", "owner": "david", "name": "big fat shopping list"}
 
@@ -95,21 +79,14 @@ def add_products():
         items.append(product_id)
         product['type'] = "product"
         product['complete'] = False
-        # product['createdAt'] = str(datetime.datetime.now())
+        product['price'] = round(random.uniform(0.25,4.99),2)
         product['createdAt'] = i
         i+=1
         product['product'] = product['name'] 
         product['productList'] = {"id": LIST_DOC, "owner": "david"}
         SDK_CLIENT.upsert(product_id, product)
     SDK_CLIENT.upsert("items", {"items": items})
-        # img_filename="./img/"+product['name']+".png"
-        # with open(img_filename, "rb") as image_file:
-        #     f = image_file.read()
-        #     image_bytes = bytearray(f)
-        #     SDK_CLIENT.upsert("img:"+product['name'], image_bytes,  format=couchbase.FMT_BYTES)
-
 
 if __name__=='__main__':
     add_products()
-    do_queries()
     check_and_create_view()
