@@ -59,6 +59,7 @@ window.onload = function NodeStatusSocket(){
               $(node_elem).show();
               if (i == 2){
                 console.log("back once again");
+                $(node_elem).removeClass('trouble-node');
                 $(node_elem).css("background-image", "url(img/server_icon.png)");
                 MAN_DOWN=false;
               }
