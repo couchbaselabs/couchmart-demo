@@ -6,6 +6,7 @@ from create_dataset import PRODUCTS as PRODUCTS
 from txcouchbase.bucket import Bucket
 import tornado.escape
 import tornado.gen
+import tornado.httpclient
 from tornado.httpclient import AsyncHTTPClient, HTTPRequest
 
 HOST="http://{}:8091".format(settings.NODES[0])
@@ -42,7 +43,7 @@ def get_URL(target_url, raise_exception=False):
     try:
       response = yield http_client.fetch(request)
       raise tornado.gen.Return(tornado.escape.json_decode(response.body))
-    except Exception as e:
+    except tornado.httpclient.HTTPError as e:
       if raise_exception:
         raise
       print ("Could not retrieve URL: " + str(target_url) + str(e))
