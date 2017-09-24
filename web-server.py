@@ -28,6 +28,11 @@ password=settings.PASSWORD
 node=settings.NODES[0]
 bucket=Bucket('couchbase://{0}/{1}'.format(node,bucket_name), username=user, password=password)
 fts_node = None
+fts_enabled = False
+nodes = []
+n1ql_enabled = False
+xdcr_enabled = False
+
 
 class CBStatusWebSocket(tornado.websocket.WebSocketHandler):
   def open(self):
@@ -48,13 +53,8 @@ class CBStatusWebSocket(tornado.websocket.WebSocketHandler):
     self.callback.stop()
 
   def getNodeStatus(self):
-    nodes = cb_status.getNodeStatus()
-    fts_enabled = cb_status.fts_enabled()
-    n1ql_enabled = cb_status.n1ql_enabled()
-    xdcr_enabled = cb_status.xdcr_enabled()
     msg = {"nodes": nodes, 'fts': fts_enabled, 'n1ql': n1ql_enabled, 'xdcr': xdcr_enabled}
     self.write_message(msg)
-
 
 class LiveOrdersWebSocket(tornado.websocket.WebSocketHandler):
   def open(self):
@@ -77,7 +77,8 @@ class LiveOrdersWebSocket(tornado.websocket.WebSocketHandler):
   @tornado.gen.coroutine
   def send_orders(self):
     res = yield bucket.queryAll(settings.DDOC_NAME, settings.VIEW_NAME, 
-                                include_docs=True, descending=False, limit=50,startkey=self.LATEST_TS)
+                                include_docs=True, descending=False, limit=50,
+                                startkey=self.LATEST_TS, stale=False)
     new_order=False
     for order in res:
       new_order=True
@@ -129,9 +130,6 @@ class SearchHandler(tornado.web.RequestHandler):
 
   @tornado.gen.coroutine
   def get(self):
-    global fts_node
-    if not fts_node:
-      fts_node = cb_status.fts_node()
 
     if fts_node:
       query = self.get_query_argument('q')
@@ -156,7 +154,6 @@ class SearchHandler(tornado.web.RequestHandler):
       raise Exception('No FTS node found')
 
 
-
 class FilterHandler(tornado.web.RequestHandler):
   @tornado.gen.coroutine
   def get(self):
@@ -169,6 +166,13 @@ class FilterHandler(tornado.web.RequestHandler):
 
     self.write({'keys': final_results})
 
+def update_cb_status():
+  global nodes, fts_enabled, n1ql_enabled, xdcr_enabled, fts_node
+  nodes = cb_status.getNodeStatus()
+  n1ql_enabled = cb_status.n1ql_enabled()
+  xdcr_enabled = cb_status.xdcr_enabled()
+  fts_node = cb_status.fts_node()
+  fts_enabled = bool(fts_node)
 
 def make_app():
   return tornado.web.Application([
@@ -186,4 +190,5 @@ if __name__ == "__main__":
   print "Running at http://localhost:8888"
   app = make_app()
   app.listen(8888)
+  PeriodicCallback(update_cb_status, 1000).start()
   tornado.ioloop.IOLoop.current().start()
