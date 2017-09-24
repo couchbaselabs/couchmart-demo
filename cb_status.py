@@ -34,7 +34,7 @@ def get_URL(target_url, raise_exception=False):
     try:
       req = urllib2.Request(target_url)
       req.add_header("Authorization", "Basic %s" % AUTH_STRING)   
-      return urllib2.urlopen(req, timeout=0.1).read()
+      return urllib2.urlopen(req, timeout=0.7).read()
     except Exception as e:
       if raise_exception:
         raise
