@@ -4,6 +4,9 @@ import urllib, urllib2, cookielib, pprint, json, time, sys, codecs, base64, rand
 import settings
 from create_dataset import PRODUCTS as PRODUCTS
 from txcouchbase.bucket import Bucket
+import tornado.escape
+import tornado.gen
+from tornado.httpclient import AsyncHTTPClient, HTTPRequest
 
 HOST="http://{}:8091".format(settings.NODES[0])
 BUCKET_URL = HOST + "/pools/default/buckets"
@@ -14,13 +17,13 @@ FTS_URL = "http://{}:8094/api/index/{}"
 XDCR_URL = HOST + "/pools/default/remoteClusters"
 USERNAME=settings.ADMIN_USER
 PASSWORD=settings.ADMIN_PASS
-AUTH_STRING = base64.encodestring('%s:%s' % (USERNAME, PASSWORD)).replace('\n', '')
 
 bucket_name=settings.BUCKET_NAME
 user=settings.USERNAME
 password=settings.PASSWORD
 node=settings.NODES[0]
 bucket=Bucket('couchbase://{0}/{1}'.format(node,bucket_name), username=user, password=password)
+http_client = AsyncHTTPClient()
 
 def getImageForProduct(product):
   for p in PRODUCTS:
@@ -28,24 +31,25 @@ def getImageForProduct(product):
       return p['image']
   return None
 
-
+@tornado.gen.coroutine
 def get_URL(target_url, raise_exception=False):
   while True:
+    request = HTTPRequest(
+      url=target_url,
+      auth_username=USERNAME,
+      auth_password=PASSWORD,
+      auth_mode='basic', request_timeout=0.3)
     try:
-      req = urllib2.Request(target_url)
-      req.add_header("Authorization", "Basic %s" % AUTH_STRING)   
-      return urllib2.urlopen(req, timeout=0.3).read()
+      response = yield http_client.fetch(request)
+      raise tornado.gen.Return(tornado.escape.json_decode(response.body))
     except Exception as e:
       if raise_exception:
         raise
       print ("Could not retrieve URL: " + str(target_url) + str(e))
-      time.sleep(1)
-
-def getBucketStatus():
-  bucket_response = json.loads(get_URL(BUCKET_URL))
-  item_count = bucket_response[0]['basicStats']['itemCount']
+      yield tornado.gen.sleep(1)
 
 # Returns a list of nodes and their statuses
+@tornado.gen.coroutine
 def getNodeStatus():
   default_status = { "hostname": "n/a", "ops": 0, "status": "out"}
   node_list = [dict(default_status) for x in range(5)]
@@ -79,36 +83,41 @@ def getNodeStatus():
     # Any other status we'll just hide
     else:
       node_list[index]['status'] = "out"
-  return node_list
+  raise tornado.gen.Return(node_list)
 
+@tornado.gen.coroutine
 def fts_node():
   response = json.loads(get_URL(SERVICE_URL))
   for node in response["nodesExt"]:
     if 'fts' in node['services']:
-      return node['hostname']
-  return None
+      raise tornado.gen.Return(node['hostname'])
+  raise tornado.gen.Return(None)
 
+@tornado.gen.coroutine
 def fts_enabled():
-  node_to_query = fts_node()
+  node_to_query = yield fts_node()
   if not node:
-    return False
+    raise tornado.gen.Return(False)
 
   try:
-    response = json.loads(get_URL(FTS_URL.format(node_to_query, 'English'),
-                                  raise_exception=True))
+    response = yield get_URL(FTS_URL.format(node_to_query, 'English'),
+                             raise_exception=True)
   except Exception:
-    return False
+    raise tornado.gen.Return(False)
   else:
-    return True
+    raise tornado.gen.Return(True)
 
+@tornado.gen.coroutine
 def n1ql_enabled():
   index_response = json.loads(get_URL(INDEX_URL))
-  return 'indexes' in index_response and any(index['index'] == u'category' and index['status'] == u'Ready' for index in index_response['indexes'])
+  raise tornado.gen.Return('indexes' in index_response and any(index['index'] == u'category' and index['status'] == u'Ready' for index in index_response['indexes']))
 
 
+@tornado.gen.coroutine
 def xdcr_enabled():
   xdcr_response = json.loads(get_URL(XDCR_URL))
-  return len(xdcr_response) > 0
+  raise tornado.gen.Return(len(xdcr_response) > 0)
+
 
 def main(args):
   while True:

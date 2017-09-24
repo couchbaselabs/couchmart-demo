@@ -160,19 +160,24 @@ class FilterHandler(tornado.web.RequestHandler):
     data = self.get_query_argument('type')
     results = yield bucket.n1qlQueryAll('SELECT meta().id FROM {} WHERE category = "{}"'
                                         .format(bucket_name, data))
-    final_results=[]
+    final_results = []
     for row in results:
       final_results.append(row['id'])
 
     self.write({'keys': final_results})
 
+
+@tornado.gen.coroutine
 def update_cb_status():
   global nodes, fts_enabled, n1ql_enabled, xdcr_enabled, fts_node
-  nodes = cb_status.getNodeStatus()
-  n1ql_enabled = cb_status.n1ql_enabled()
-  xdcr_enabled = cb_status.xdcr_enabled()
-  fts_node = cb_status.fts_node()
-  fts_enabled = bool(fts_node)
+  while True:
+    nodes = yield cb_status.getNodeStatus()
+    n1ql_enabled = yield cb_status.n1ql_enabled()
+    xdcr_enabled = yield cb_status.xdcr_enabled()
+    fts_node = yield cb_status.fts_node()
+    fts_enabled = yield cb_status.fts_enabled()
+    yield tornado.gen.sleep(0.5)
+
 
 def make_app():
   return tornado.web.Application([
@@ -186,9 +191,10 @@ def make_app():
     (r'/(.*)', tornado.web.StaticFileHandler, {'path': "./www/"}),
     ], debug=True)
 
+
 if __name__ == "__main__":
   print "Running at http://localhost:8888"
   app = make_app()
   app.listen(8888)
-  PeriodicCallback(update_cb_status, 500).start()
+  tornado.ioloop.IOLoop.current().spawn_callback(update_cb_status)
   tornado.ioloop.IOLoop.current().start()
