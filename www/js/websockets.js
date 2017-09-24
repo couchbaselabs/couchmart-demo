@@ -11,8 +11,6 @@ function setAlpha(node_elem, new_alpha){
   var rgb_array = bg.slice(strip_chars).split(',');
   var newBg = 'rgba('+parseInt(rgb_array[0])+','+parseInt(rgb_array[1])+','+parseInt(rgb_array[2])+','+new_alpha+')';
   $(node_elem).css('background-color',newBg);
-  console.log (bg, rgb_array, newBg);
-
 }
 
 window.onload = function NodeStatusSocket(){
@@ -35,16 +33,35 @@ window.onload = function NodeStatusSocket(){
           for (i = 0; i < msg['nodes'].length; i++){
             node = msg['nodes'][i];
             node_elem = "#node" + (i+1);
-            if (node['status'] == "down"){
+            if (node['status'] == "out"){
               $(node_elem).hide();
+            if (i == 2)
+                MAN_DOWN=false;
             }
-            else if (node['status'] == "failed"){
+            else if (node['status'] == "trouble"){
+              $(node_elem).addClass('trouble-node');
+              $(node_elem).css("background-image", "url(img/trouble_server_icon.png)");
+              $(node_elem).show();
+              if (i == 2)
+                console.log("man down")
+                MAN_DOWN=true;
+            }
+            else if (node['status'] == "dormant"){
               setAlpha(node_elem,0.25);
               $(node_elem).show();
+              if (i == 2)
+               $(node_elem).removeClass('trouble-node');
+               $(node_elem).css("background-image", "url(img/server_icon.png)");
+                MAN_DOWN=false;
             }
             else {
               setAlpha(node_elem,1);
               $(node_elem).show();
+              if (i == 2){
+                console.log("back once again");
+                $(node_elem).css("background-image", "url(img/server_icon.png)");
+                MAN_DOWN=false;
+              }
             }
             total_ops += node['ops'];
           }

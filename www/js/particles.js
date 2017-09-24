@@ -40,6 +40,7 @@ var Particle = function(index){
   this.green = palette[col_index].green;
   this.blue = palette[col_index].blue;
   this.id = index;
+  this.active = true;
 
 
   var xdir = 0.5-Math.random();
@@ -66,37 +67,41 @@ var Particle = function(index){
   this.index = index;
 
   this.draw = function(){
-    ctx.fillStyle = 'rgba(' + this.red + ',' + this.green + ',' + this.blue + ',' + this.alpha+')';
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-    ctx.fill(); 
+    if (this.active) {
+      ctx.fillStyle = 'rgba(' + this.red + ',' + this.green + ',' + this.blue + ',' + this.alpha+')';
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fill(); 
+    }
   }
+
 
   this.update = function(){
-    this.alpha -= this.decay;
-
-    if (this.x >= c.width || this.x <= 0 ||
-        this.y >= c.height || this.y <= 0 ||
-        this.alpha <= 0){
-      particles[this.index] = new Particle(this.index);
-    }
-    this.x += this.xspeed;
-    this.y += this.yspeed;
+    if (this.active && 
+        (!MAN_DOWN || (this.index % 3 != 0))) {
+      this.alpha -= this.decay;
+      this.x += this.xspeed;
+      this.y += this.yspeed;
+      if (this.x >= c.width || this.x <= 0 ||
+          this.y >= c.height || this.y <= 0 ||
+          this.alpha <= 0){
+        this.active = false;
+       }
+ }
+    if (!this.active && this.index < LIVE_PARTICLES) {
+              particles[this.index] = new Particle(this.index);
+      }
   }
-
 };
 
   
 function drawCircles(){  
   ctx.clearRect(0, 0, c.width,c.height);
-  for (i=0; (i< LIVE_PARTICLES && i < MAX_PARTICLES);i++)
+  for (i=0;  i < MAX_PARTICLES;i++)
   {
-  if (!MAN_DOWN || (i % 3 != 0))  
-      {
       particles[i].update();
+      particles[i].draw();
     }
-    particles[i].draw();
-  }
 }
 
 function loop() {

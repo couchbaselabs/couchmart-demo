@@ -47,26 +47,38 @@ def getBucketStatus():
 
 # Returns a list of nodes and their statuses
 def getNodeStatus():
-  default_status = { "hostname": "n/a", "ops": 0, "status": "down"}
+  default_status = { "hostname": "n/a", "ops": 0, "status": "out"}
   node_list = [dict(default_status) for x in range(5)]
   kv_nodes = index = 0
   node_response   = json.loads(get_URL(NODE_URL))
   for node in node_response['groups'][0]['nodes']:
     if "kv" in node['services']:
       index = kv_nodes
-      node_list[index]['ops'] = node['interestingStats']['cmd_get']
       kv_nodes += 1
     elif "n1ql" in node['services']:
       index = 3
     elif "fts" in node['services']:
       index = 4
     node_list[index]['hostname'] = node['hostname']
-    if node['status'] != "healthy" and node['clusterMembership'] == "active":
-      node_list[index]['status'] = "down"
-    elif node['clusterMembership'] != "active":
-       node_list[index]['status'] = "failed"
-    else:
+    # First check for nodes that are fully fledged members of the cluster
+    # And if they are KV nodes, check how many ops they're doing
+    if node['status'] == "healthy" and node['clusterMembership'] == "active":
       node_list[index]['status'] = "ok"
+      if "kv" in node['services'] and 'cmd_get' in node['interestingStats']:
+        node_list[index]['ops'] = node['interestingStats']['cmd_get']
+    # Check for cluster members that are unhealthy (in risk of being failed)
+    # We will highlight these with a red border
+    elif node['clusterMembership'] == "active" and \
+         node['status'] == "unhealthy":
+       node_list[index]['status'] = "trouble"
+    # Then, nodes that are either failed over or not rebalanced in
+    # These will appear as faded
+    elif node['clusterMembership'] == "inactiveFailed" or \
+         node['clusterMembership'] == "inactiveAdded":
+       node_list[index]['status'] = "dormant"
+    # Any other status we'll just hide
+    else:
+      node_list[index]['status'] = "out"
   return node_list
 
 def fts_node():
@@ -97,20 +109,6 @@ def n1ql_enabled():
 def xdcr_enabled():
   xdcr_response = json.loads(get_URL(XDCR_URL))
   return len(xdcr_response) > 0
-
-LAST_ORDER_QUERY=('SELECT META().id as order_id, name, `order` FROM `{}`'
-                  'WHERE type = "order" AND name IS NOT MISSING AND `order` '
-                  'IS NOT MISSING AND ts IS NOT MISSING ORDER by ts DESC LIMIT 1'.format(bucket_name))
-
-def getLatestOrders():
-    last_orders = yield bucket.n1qlQueryAll(LAST_ORDER_QUERY)
-    for order in last_orders:
-      msg = {"name": order['name'], "images" :[]}
-      for prod in order['order']:
-        msg['images'].append("./img/"+getImageForProduct(prod))
-    yield msg
-    return
-
 
 def main(args):
   while True:

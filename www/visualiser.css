@@ -82,6 +82,12 @@ hr {
   border: 10px solid transparent;
 }
 
+.trouble-node{
+  border-color: #C1101F; 
+  border-width: 10px; 
+  border-style : solid ;
+}
+
 #node1{
   background-color: rgba(235,73,113,1);
   background-image: url("img/server_icon.png");
