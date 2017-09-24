@@ -97,7 +97,11 @@ class LiveOrdersWebSocket(tornado.websocket.WebSocketHandler):
       msg = {"name": display_order['name'], "images" :[]}
       for prod in display_order['order']:
           msg['images'].append("./img/"+cb_status.getImageForProduct(prod))
-      self.write_message(msg)  
+      self.write_message(msg)
+      if display_order['name'] == 'Couchbase Demo Phone' and self.NEXT_CUSTOMER==0:
+          self.callback.stop()
+          yield tornado.gen.sleep(5)
+          self.callback.start()
     
 class ShopHandler(tornado.web.RequestHandler):
   @tornado.gen.coroutine
