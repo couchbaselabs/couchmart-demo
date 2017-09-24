@@ -55,7 +55,7 @@ def getNodeStatus():
   default_status = { "hostname": "n/a", "ops": 0, "status": "out"}
   node_list = [dict(default_status) for x in range(5)]
   kv_nodes = index = 0
-  node_response   = json.loads(get_URL(NODE_URL))
+  node_response = yield get_URL(NODE_URL)
   for node in node_response['groups'][0]['nodes']:
     if "kv" in node['services']:
       index = kv_nodes
@@ -88,7 +88,7 @@ def getNodeStatus():
 
 @tornado.gen.coroutine
 def fts_node():
-  response = json.loads(get_URL(SERVICE_URL))
+  response = yield get_URL(SERVICE_URL)
   for node in response["nodesExt"]:
     if 'fts' in node['services']:
       raise tornado.gen.Return(node['hostname'])
@@ -110,13 +110,13 @@ def fts_enabled():
 
 @tornado.gen.coroutine
 def n1ql_enabled():
-  index_response = json.loads(get_URL(INDEX_URL))
+  index_response = yield get_URL(INDEX_URL)
   raise tornado.gen.Return('indexes' in index_response and any(index['index'] == u'category' and index['status'] == u'Ready' for index in index_response['indexes']))
 
 
 @tornado.gen.coroutine
 def xdcr_enabled():
-  xdcr_response = json.loads(get_URL(XDCR_URL))
+  xdcr_response = yield get_URL(XDCR_URL)
   raise tornado.gen.Return(len(xdcr_response) > 0)
 
 
