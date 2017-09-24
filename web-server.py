@@ -190,5 +190,5 @@ if __name__ == "__main__":
   print "Running at http://localhost:8888"
   app = make_app()
   app.listen(8888)
-  PeriodicCallback(update_cb_status, 1000).start()
+  PeriodicCallback(update_cb_status, 500).start()
   tornado.ioloop.IOLoop.current().start()
