@@ -76,10 +76,12 @@ def getNodeStatus():
     elif node['clusterMembership'] == "active" and \
          node['status'] == "unhealthy":
        node_list[index]['status'] = "trouble"
-    # Then, nodes that are either failed over or not rebalanced in
+    # Then, nodes that are either failed over, warming up or not rebalanced in
     # These will appear as faded
     elif node['clusterMembership'] == "inactiveFailed" or \
-         node['clusterMembership'] == "inactiveAdded":
+         node['clusterMembership'] == "inactiveAdded" or \
+         (node['clusterMembership'] == "active" and \
+         node['status'] == "warmup"):
        node_list[index]['status'] = "dormant"
     # Any other status we'll just hide
     else:
