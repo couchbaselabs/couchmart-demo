@@ -213,11 +213,8 @@ public class TasksFragment extends Fragment {
                 case "apples":
                     imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_apples));
                     break;
-                case "bacon":
-                    if (isEnabled(position))
-                        imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_bacon));
-                    else
-                        imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_no_bacon));
+                case "marmite":
+                        imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_marmite));
                     break;
                 case "bananas":
                     imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_bananas));
@@ -225,8 +222,8 @@ public class TasksFragment extends Fragment {
                 case "beer":
                     imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_beer));
                     break;
-                case "bonbons":
-                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_bonbons));
+                case "scotch egg":
+                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_scotch_egg));
                     break;
                 case "bread":
                     imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_bread));
@@ -237,8 +234,8 @@ public class TasksFragment extends Fragment {
                 case "butter":
                     imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_butter));
                     break;
-                case "carambars":
-                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_carambars));
+                case "pot noodle":
+                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_pot_noodle));
                     break;
                 case "champagne":
                     imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_champagne));
@@ -285,8 +282,8 @@ public class TasksFragment extends Fragment {
                 case "water":
                     imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_water));
                     break;
-                case "whisky":
-                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_whisky));
+                case "baked beans":
+                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_beans));
                     break;
                 default:
                     imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_note));
