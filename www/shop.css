@@ -282,6 +282,9 @@ body {
     border-style: solid;
     border-color: yellow;
     border-radius: 25px;
+    -webkit-box-shadow:0 0 20px yellow;
+    -moz-box-shadow: 0 0 20px yellow;
+    box-shadow:0 0 20px yellow;
 }
 
 .search-btn{
