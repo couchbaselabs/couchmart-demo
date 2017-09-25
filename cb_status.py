@@ -22,7 +22,10 @@ PASSWORD=settings.ADMIN_PASS
 bucket_name=settings.BUCKET_NAME
 user=settings.USERNAME
 password=settings.PASSWORD
-node=settings.NODES[0]
+if settings.AWS:
+  node=settings.AWS_NODES[0]
+else:
+  node=settings.AZURE_NODES[0]
 aws=settings.AWS
 bucket=Bucket('couchbase://{0}/{1}'.format(node,bucket_name), username=user, password=password)
 http_client = AsyncHTTPClient()

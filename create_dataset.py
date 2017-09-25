@@ -10,7 +10,10 @@ import random
 bucket_name=settings.BUCKET_NAME
 user=settings.USERNAME
 password=settings.PASSWORD
-node=settings.NODES[0]
+if settings.AWS:
+  node=settings.AWS_NODES[0]
+else:
+  node=settings.AZURE_NODES[0]
 SDK_CLIENT = Bucket('couchbase://{0}/{1}'.format(node,bucket_name), username=user, password=password)
 
 SDK_CLIENT.timeout = 15
