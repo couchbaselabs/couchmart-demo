@@ -57,10 +57,11 @@ def get_URL(target_url, raise_exception=False):
 # Returns a list of nodes and their statuses
 @tornado.gen.coroutine
 def getNodeStatus():
-  default_status = { "hostname": "n/a", "ops": 0, "status": "out"}
+  default_status = {"hostname": "n/a", "ops": 0, "status": "out"}
 
   node_list = [dict(default_status) for x in range(5)]
   if not aws:
+    node_list[0]['ops'] = 400
     raise tornado.gen.Return(node_list)
 
   kv_nodes = index = 0
