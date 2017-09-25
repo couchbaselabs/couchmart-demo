@@ -281,6 +281,7 @@ body {
     padding-bottom: 10px;
     border-style: solid;
     border-color: yellow;
+    border-radius: 25px;
 }
 
 .search-btn{
@@ -331,11 +332,20 @@ body {
     border-color: white;
 }
 
+.name-container {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
 .type-row {
     padding-top: 10px;
     padding-bottom: 10px;
     border-style: solid;
     border-color: yellow;
+    border-radius: 25px;
+    -webkit-box-shadow:0 0 20px yellow;
+    -moz-box-shadow: 0 0 20px yellow;
+    box-shadow:0 0 20px yellow;
 }
 /*
  * Affix and center
