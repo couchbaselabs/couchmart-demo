@@ -267,7 +267,7 @@ public class TasksFragment extends Fragment {
                 case "oranges":
                     imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_oranges));
                     break;
-                case "pineapples":
+                case "pineapple":
                     imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_pineapple));
                     break;
                 case "red wine":
@@ -276,8 +276,8 @@ public class TasksFragment extends Fragment {
                 case "sausages":
                     imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_sausages));
                     break;
-                case "strawberries":
-                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_strawberries));
+                case "tea bags":
+                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_tea_bags));
                     break;
                 case "water":
                     imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_water));
