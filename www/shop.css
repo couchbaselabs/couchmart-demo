@@ -233,17 +233,14 @@ body {
 
 .couchmart-tooltip {
     visibility: hidden;
-    width: 120px;
     background-color: black;
     color: #fff;
     text-align: center;
-    padding: 5px 0;
     border-radius: 6px;
-    font-size: 46px;
-
-    /* Position the tooltip text - see examples below! */
+    font-size: 4.5em;
     position: absolute;
     z-index: 1;
+    margin-left: -2.5em;
 }
 
 .title-container:hover .couchmart-tooltip {
