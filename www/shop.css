@@ -125,7 +125,8 @@ img {
 }
 
 .products {
-    padding-top: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 .submit-btn{
@@ -276,7 +277,8 @@ body {
 
 .search-container{
     margin: auto;
-    padding-bottom: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
     border-style: solid;
     border-color: yellow;
 }
@@ -330,7 +332,8 @@ body {
 }
 
 .type-row {
-    padding-top: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
     border-style: solid;
     border-color: yellow;
 }
