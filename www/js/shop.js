@@ -124,19 +124,31 @@ $(".type-btn").click(function(){
 });
 
 $(".type-row").hover(function(){
-    $(this).css("border-style", "none")
+    $(this).css("border-style", "none");
+    $(this).css("-webkit-box-shadow", "");
+    $(this).css("-moz-box-shadow", "");
+    $(this).css("box-shadow", "");
 });
 
 $(".type-row").click(function(){
-    $(this).css("border-style", "none")
+    $(this).css("border-style", "none");
+    $(this).css("-webkit-box-shadow", "");
+    $(this).css("-moz-box-shadow", "");
+    $(this).css("box-shadow", "");
 });
 
 $(".search-container").hover(function(){
-    $(this).css("border-style", "none")
+    $(this).css("border-style", "none");
+    $(this).css("-webkit-box-shadow", "");
+    $(this).css("-moz-box-shadow", "");
+    $(this).css("box-shadow", "");
 });
 
 $(".search-container").click(function(){
-    $(this).css("border-style", "none")
+        $(this).css("border-style", "none");
+    $(this).css("-webkit-box-shadow", "");
+    $(this).css("-moz-box-shadow", "");
+    $(this).css("box-shadow", "");
 });
 
 $(document).ready(function(){
