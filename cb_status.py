@@ -34,7 +34,7 @@ def getImageForProduct(product):
 
 @tornado.gen.coroutine
 def get_URL(target_url, raise_exception=False):
-  while True:
+  for _ in xrange(3):
     request = HTTPRequest(
       url=target_url,
       auth_username=USERNAME,
@@ -47,7 +47,8 @@ def get_URL(target_url, raise_exception=False):
       if raise_exception:
         raise
       print ("Could not retrieve URL: " + str(target_url) + str(e))
-      yield tornado.gen.sleep(1)
+      yield tornado.gen.sleep(0.5)
+  raise tornado.gen.Return(None)
 
 # Returns a list of nodes and their statuses
 @tornado.gen.coroutine
@@ -56,6 +57,10 @@ def getNodeStatus():
   node_list = [dict(default_status) for x in range(5)]
   kv_nodes = index = 0
   node_response = yield get_URL(NODE_URL)
+  
+  if node_response:
+    raise tornado.gen.Return(node_list)
+
   for node in node_response['groups'][0]['nodes']:
     if "kv" in node['services']:
       index = kv_nodes
