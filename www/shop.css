@@ -125,7 +125,7 @@ img {
 }
 
 .products {
-    padding-top: 0px;
+    padding-top: 20px;
 }
 
 .submit-btn{
@@ -277,11 +277,10 @@ body {
 .search-container{
     margin: auto;
     padding-bottom: 20px;
+    border-style: solid;
+    border-color: yellow;
 }
 
-.type-btn-col {
-    padding-bottom: 20px;
-}
 .search-btn{
     background: transparent;
     border: none;
@@ -332,6 +331,8 @@ body {
 
 .type-row {
     padding-top: 20px;
+    border-style: solid;
+    border-color: yellow;
 }
 /*
  * Affix and center

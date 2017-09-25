@@ -123,6 +123,22 @@ $(".type-btn").click(function(){
     });
 });
 
+$(".type-row").hover(function(){
+    $(this).css("border-style", "none")
+});
+
+$(".type-row").click(function(){
+    $(this).css("border-style", "none")
+});
+
+$(".search-container").hover(function(){
+    $(this).css("border-style", "none")
+});
+
+$(".search-container").click(function(){
+    $(this).css("border-style", "none")
+});
+
 $(document).ready(function(){
     $('#name-box').keypress(function(e){
       if(e.keyCode==13)
