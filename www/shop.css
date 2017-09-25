@@ -231,6 +231,25 @@ body {
     padding-bottom: 20px;
 }
 
+.couchmart-tooltip {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+    font-size: 46px;
+
+    /* Position the tooltip text - see examples below! */
+    position: absolute;
+    z-index: 1;
+}
+
+.title-container:hover .couchmart-tooltip {
+  visibility: visible;
+}
+
 .nav-masthead .nav-link {
   padding: .25rem 0;
   font-weight: bold;
