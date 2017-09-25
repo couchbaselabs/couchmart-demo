@@ -240,7 +240,7 @@ body {
     font-size: 4.5em;
     position: absolute;
     z-index: 1;
-    margin-left: -2.5em;
+    margin-left: -3.5em;
 }
 
 .title-hover:hover .couchmart-tooltip {
