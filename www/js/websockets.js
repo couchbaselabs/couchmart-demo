@@ -42,17 +42,19 @@ window.onload = function NodeStatusSocket(){
               $(node_elem).addClass('trouble-node');
               $(node_elem).css("background-image", "url(img/trouble_server_icon.png)");
               $(node_elem).show();
-              if (i == 2)
-                console.log("man down")
-                MAN_DOWN=true;
+              if (i == 2) {
+                  console.log("man down")
+                  MAN_DOWN = true;
+              }
             }
             else if (node['status'] == "dormant"){
               setAlpha(node_elem,0.25);
               $(node_elem).show();
-              if (i == 2)
-               $(node_elem).removeClass('trouble-node');
-               $(node_elem).css("background-image", "url(img/server_icon.png)");
-                MAN_DOWN=false;
+              if (i == 2) {
+                  $(node_elem).removeClass('trouble-node');
+                  $(node_elem).css("background-image", "url(img/server_icon.png)");
+                  MAN_DOWN = false;
+              }
             }
             else {
               setAlpha(node_elem,1);
