@@ -9,7 +9,11 @@ import tornado.gen
 import tornado.httpclient
 from tornado.httpclient import AsyncHTTPClient, HTTPRequest
 
-HOST="http://{}:8091".format(settings.NODES[0])
+if settings.AWS:
+  node=settings.AWS_NODES[0]
+else:
+  node=settings.AZURE_NODES[0]
+HOST="http://{}:8091".format(node)
 BUCKET_URL = HOST + "/pools/default/buckets"
 NODE_URL = HOST + "/pools/default/serverGroups"
 INDEX_URL = HOST + "/indexStatus"
@@ -22,10 +26,7 @@ PASSWORD=settings.ADMIN_PASS
 bucket_name=settings.BUCKET_NAME
 user=settings.USERNAME
 password=settings.PASSWORD
-if settings.AWS:
-  node=settings.AWS_NODES[0]
-else:
-  node=settings.AZURE_NODES[0]
+
 aws=settings.AWS
 bucket=Bucket('couchbase://{0}/{1}'.format(node,bucket_name), username=user, password=password)
 http_client = AsyncHTTPClient()
