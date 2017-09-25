@@ -1,5 +1,7 @@
 BUCKET_NAME="charlie"
-NODES=["10.142.170.101", "10.142.170.102"]
+AWS_NODES=["10.142.170.101", "10.142.170.102"]
+AZURE_NODES=[""]
+AWS=True
 USERNAME="charlie"
 PASSWORD="password"
 ADMIN_USER="Administrator"

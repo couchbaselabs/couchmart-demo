@@ -23,6 +23,7 @@ bucket_name=settings.BUCKET_NAME
 user=settings.USERNAME
 password=settings.PASSWORD
 node=settings.NODES[0]
+aws=settings.AWS
 bucket=Bucket('couchbase://{0}/{1}'.format(node,bucket_name), username=user, password=password)
 http_client = AsyncHTTPClient()
 
@@ -53,7 +54,11 @@ def get_URL(target_url, raise_exception=False):
 @tornado.gen.coroutine
 def getNodeStatus():
   default_status = { "hostname": "n/a", "ops": 0, "status": "out"}
+
   node_list = [dict(default_status) for x in range(5)]
+  if not aws:
+    raise tornado.gen.Return(node_list)
+
   kv_nodes = index = 0
   node_response = yield get_URL(NODE_URL)
   for node in node_response['groups'][0]['nodes']:
@@ -118,6 +123,8 @@ def n1ql_enabled():
 
 @tornado.gen.coroutine
 def xdcr_enabled():
+  if not aws:
+    raise tornado.gen.Return(True)
   xdcr_response = yield get_URL(XDCR_URL)
   raise tornado.gen.Return(len(xdcr_response) > 0)
 
