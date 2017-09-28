@@ -29,6 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_horizontal"
         android:layout_margin="@dimen/fab_margin"
+        android:visibility="gone"
         app:layout_anchor="@id/frameLayout"
         app:layout_anchorGravity="bottom|right"
         app:srcCompat="@drawable/ic_camera" />
@@ -40,7 +41,7 @@
         android:layout_gravity="bottom|center_horizontal"
         android:layout_margin="@dimen/fab_margin"
         app:layout_anchor="@+id/frameLayout"
-        app:layout_anchorGravity="bottom|left"
+        app:layout_anchorGravity="bottom|right"
         app:srcCompat="@drawable/ic_cart" />
 
 </android.support.design.widget.CoordinatorLayout>
