@@ -9,7 +9,7 @@
 }
 
 .name-input{
-        height: 30px;
+    height: 30px;
     width: 300px;
 }
 
@@ -163,17 +163,17 @@ img {
 a,
 a:focus,
 a:hover {
-  color: #fff;
+    color: #fff;
 }
 
 /* Custom default button */
 .btn-secondary,
 .btn-secondary:hover,
 .btn-secondary:focus {
-  color: #333;
-  text-shadow: none; /* Prevent inheritance from `body` */
-  background-color: #fff;
-  border: .05rem solid #fff;
+    color: #333;
+    text-shadow: none; /* Prevent inheritance from `body` */
+    background-color: #fff;
+    border: .05rem solid #fff;
 }
 
 
@@ -183,37 +183,37 @@ a:hover {
 
 html,
 body {
-  height: 100%;
-  background-color: black;
+    height: 100%;
+    background-color: black;
     font-family: "Montserrat";
 }
 body {
-  color: #fff;
-  text-align: center;
-  text-shadow: 0 .05rem .1rem rgba(0,0,0,.5);
+    color: #fff;
+    text-align: center;
+    text-shadow: 0 .05rem .1rem rgba(0,0,0,.5);
 }
 
 /* Extra markup and styles for table-esque vertical and horizontal centering */
 .site-wrapper {
-  display: table;
-  width: 100%;
-  height: 100%; /* For at least Firefox */
-  min-height: 100%;
-  -webkit-box-shadow: inset 0 0 5rem rgba(0,0,0,.5);
-          box-shadow: inset 0 0 5rem rgba(0,0,0,.5);
+    display: table;
+    width: 100%;
+    height: 100%; /* For at least Firefox */
+    min-height: 100%;
+    -webkit-box-shadow: inset 0 0 5rem rgba(0,0,0,.5);
+    box-shadow: inset 0 0 5rem rgba(0,0,0,.5);
 }
 .site-wrapper-inner {
-  display: table-cell;
-  vertical-align: top;
+    display: table-cell;
+    vertical-align: top;
 }
 .cover-container {
-  margin-right: auto;
-  margin-left: auto;
+    margin-right: auto;
+    margin-left: auto;
 }
 
 /* Padding for spacing */
 .inner {
-  padding: 2rem;
+    padding: 2rem;
 }
 
 
@@ -222,11 +222,11 @@ body {
  */
 
 .masthead {
-  margin-bottom: 2rem;
+    margin-bottom: 2rem;
 }
 
 .masthead-brand {
-  margin-bottom: 0;
+    margin-bottom: 0;
     padding-top: 20px;
     padding-bottom: 20px;
 }
@@ -244,38 +244,38 @@ body {
 }
 
 .title-hover:hover .couchmart-tooltip {
-  visibility: visible;
+    visibility: visible;
 }
 
 .nav-masthead .nav-link {
-  padding: .25rem 0;
-  font-weight: bold;
-  color: rgba(255,255,255,.5);
-  background-color: transparent;
-  border-bottom: .25rem solid transparent;
+    padding: .25rem 0;
+    font-weight: bold;
+    color: rgba(255,255,255,.5);
+    background-color: transparent;
+    border-bottom: .25rem solid transparent;
 }
 
 .nav-masthead .nav-link:hover,
 .nav-masthead .nav-link:focus {
-  border-bottom-color: rgba(255,255,255,.25);
+    border-bottom-color: rgba(255,255,255,.25);
 }
 
 .nav-masthead .nav-link + .nav-link {
-  margin-left: 1rem;
+    margin-left: 1rem;
 }
 
 .nav-masthead .active {
-  color: #fff;
-  border-bottom-color: #fff;
+    color: #fff;
+    border-bottom-color: #fff;
 }
 
 @media (min-width: 48em) {
-  .masthead-brand {
-    float: left;
-  }
-  .nav-masthead {
-    float: right;
-  }
+    .masthead-brand {
+        float: left;
+    }
+    .nav-masthead {
+        float: right;
+    }
 }
 
 
@@ -284,11 +284,11 @@ body {
  */
 
 .cover {
-  padding: 0 1.5rem;
+    padding: 0 1.5rem;
 }
 .cover .btn-lg {
-  padding: .75rem 1.25rem;
-  font-weight: bold;
+    padding: .75rem 1.25rem;
+    font-weight: bold;
 }
 
 .search-container{
@@ -309,7 +309,7 @@ body {
 }
 
 .search-input{
-        height: 100%;
+    height: 100%;
     float: left;
     width: calc(100% - 41px);
     background: linear-gradient(to bottom, rgba(51,51,51,1) 0%,rgba(32,26,25,1) 100%);
@@ -322,7 +322,7 @@ body {
  */
 
 .mastfoot {
-  color: rgba(255,255,255,.5);
+    color: rgba(255,255,255,.5);
 }
 
 .type-btn{
@@ -372,7 +372,7 @@ body {
 
 .rotate {
     -webkit-animation: rotation 2s infinite linear;
-            animation: rotation 2s infinite linear;
+    animation: rotation 2s infinite linear;
 }
 
 @-webkit-keyframes rotation {
@@ -389,31 +389,31 @@ body {
 }
 
 @media (min-width: 40em) {
-  /* Pull out the header and footer */
-  .masthead {
-    position: fixed;
-    top: 0;
-  }
-  .mastfoot {
-    position: fixed;
-    bottom: 0;
-  }
-  /* Start the vertical centering */
-  .site-wrapper-inner {
-    vertical-align: top;
-  }
-  /* Handle the widths */
-  .masthead,
-  .mastfoot,
-  .cover-container {
-    width: 100%; /* Must be percentage or pixels for horizontal alignment */
-  }
+    /* Pull out the header and footer */
+    .masthead {
+        position: fixed;
+        top: 0;
+    }
+    .mastfoot {
+        position: fixed;
+        bottom: 0;
+    }
+    /* Start the vertical centering */
+    .site-wrapper-inner {
+        vertical-align: top;
+    }
+    /* Handle the widths */
+    .masthead,
+    .mastfoot,
+    .cover-container {
+        width: 100%; /* Must be percentage or pixels for horizontal alignment */
+    }
 }
 
 @media (min-width: 62em) {
-  .masthead,
-  .mastfoot,
-  .cover-container {
-    width: 62rem;
-  }
+    .masthead,
+    .mastfoot,
+    .cover-container {
+        width: 62rem;
+    }
 }

@@ -33,18 +33,18 @@ $( ".submit-btn" ).click(function() {
 
 $( ".btn-product" ).click(function (event){
     var active_buttons = $(".btn-product.active");
-     if (active_buttons.length >= 5) {
-         if (!$(this).hasClass("active")) {
+    if (active_buttons.length >= 5) {
+        if (!$(this).hasClass("active")) {
 
-         alert("Cannot select more than 5 items.");
-         event.stopPropagation();
+            alert("Cannot select more than 5 items.");
+            event.stopPropagation();
         }
     }
 });
 
 var clear_filter = function (){
     $(".btn-product").each(function () {
-              $(this).parent().show();
+        $(this).parent().show();
     });
 };
 
@@ -78,20 +78,20 @@ if (hasTouch()) { // remove all :hover stylesheets
 
 $(".search-btn").click(function() {
     if($('.search-input').val() === ""){
-            clear_types();
-          clear_filter();
-          return;
+        clear_types();
+        clear_filter();
+        return;
     }
     $(".search-btn").attr("disabled", true);
     $("body > div > div > div > div > div.container > div:nth-child(1) > div.col-md-4.col-sm-6.col-8.search-container > button > img").addClass("rotate");
     $.get("/search?q="+$(".search-input").val(), function (data){
         clear_types();
-         $(".btn-product").each(function () {
-          if (data['keys'].indexOf($(this).val()) === -1){
-              $(this).parent().hide();
-          }else{
-              $(this).parent().show();
-          }
+        $(".btn-product").each(function () {
+            if (data['keys'].indexOf($(this).val()) === -1){
+                $(this).parent().hide();
+            }else{
+                $(this).parent().show();
+            }
         });
     }).fail(function(){
         alert("Error submitting search.")
@@ -105,7 +105,7 @@ $(".type-btn").click(function(){
     $('.search-input').val('');
     if ($(this).hasClass("active")){
         $(".btn-product").each(function () {
-              $(this).parent().show();
+            $(this).parent().show();
         });
         return;
     }
@@ -114,11 +114,11 @@ $(".type-btn").click(function(){
 
     $.get("/filter?type=" + $(this).val(), function (data){
         $(".btn-product").each(function () {
-          if (data['keys'].indexOf($(this).val()) === -1){
-              $(this).parent().hide();
-          }else{
-              $(this).parent().show();
-          }
+            if (data['keys'].indexOf($(this).val()) === -1){
+                $(this).parent().hide();
+            }else{
+                $(this).parent().show();
+            }
         });
     });
 });
@@ -153,66 +153,66 @@ $(".search-container").click(function(){
 
 $(document).ready(function(){
     $('#name-box').keypress(function(e){
-      if(e.keyCode==13)
-      $('.submit-btn').click();
+        if(e.keyCode==13)
+            $('.submit-btn').click();
     });
 });
 
 $(document).ready(function(){
     $('.search-input').keypress(function(e){
-      if(e.keyCode==13)
-      $('.search-btn').click();
+        if(e.keyCode==13)
+            $('.search-btn').click();
     });
 });
 
 $(document).ready(function(){
     $('.search-input').on('input', function(e){
-      if($('.search-input').val() === ""){
-        clear_filter();
-        clear_types();
-      }
+        if($('.search-input').val() === ""){
+            clear_filter();
+            clear_types();
+        }
     });
 });
 
 window.onload = function ShopSocket(){
 
     if ("WebSocket" in window) {
-       // Let us open a web socket
-       var ws = new WebSocket("ws://" + location.host + "/nodestatus");
-       ws.onopen = function() {
-           console.log("started");
-          // Web Socket is connected, send data using send()
-          ws.send("Shop Socket Connected");
-       };
+        // Let us open a web socket
+        var ws = new WebSocket("ws://" + location.host + "/nodestatus");
+        ws.onopen = function() {
+            console.log("started");
+            // Web Socket is connected, send data using send()
+            ws.send("Shop Socket Connected");
+        };
 
-       ws.onmessage = function (evt)
-       {
-          var msg = JSON.parse(evt.data);
-          if (msg['fts']){
-              $(".search-container").show();
-          } else {
-              $(".search-container").hide();
-          }
+        ws.onmessage = function (evt)
+        {
+            var msg = JSON.parse(evt.data);
+            if (msg['fts']){
+                $(".search-container").show();
+            } else {
+                $(".search-container").hide();
+            }
 
-          if (msg['n1ql']){
-              $(".type-row").show();
-          } else {
-              $(".type-row").hide();
-          }
-        console.log("received: "+msg)
+            if (msg['n1ql']){
+                $(".type-row").show();
+            } else {
+                $(".type-row").hide();
+            }
+            console.log("received: "+msg)
 
-     };
+        };
 
-     ws.onclose = function()
-     {
-        // websocket is closed.
-        setTimeout(function(){ShopSocket()}, 5000);
-     };
+        ws.onclose = function()
+        {
+            // websocket is closed.
+            setTimeout(function(){ShopSocket()}, 5000);
+        };
     }
     else
     {
-       // The browser doesn't support WebSocket
-       alert("WebSocket NOT supported by your Browser!");
+        // The browser doesn't support WebSocket
+        alert("WebSocket NOT supported by your Browser!");
     }
- };
+};
 

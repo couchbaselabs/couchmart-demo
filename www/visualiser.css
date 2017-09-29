@@ -1,40 +1,40 @@
 @import url('https://fonts.googleapis.com/css?family=Montserrat');
 body {
-  padding-top: 2rem;
-  padding-bottom: 2rem;
-  background-color: rgba(0,0,0,1);
- 
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    background-color: rgba(0,0,0,1);
+
 }
 
 
 h3 {
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-  font-family: "Montserrat";
-  font-style: normal;
-  font-weight: 600;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    font-family: "Montserrat";
+    font-style: normal;
+    font-weight: 600;
 
 }
 
 li{
-  font-size: 2rem;
+    font-size: 2rem;
 }
 li>img{
-  height:64px;
-  padding-right: 100px
+    height:64px;
+    padding-right: 100px
 }
 
 
 .row {
-  margin-bottom: 1rem;
+    margin-bottom: 1rem;
 }
 .row .row {
-  margin-top: 1rem;
-  margin-bottom: 0;
+    margin-top: 1rem;
+    margin-bottom: 0;
 }
 [class*="col-"] {
-  padding-top: 1rem;
-  padding-bottom: 1rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
 }
 
 .left{
@@ -54,8 +54,8 @@ canvas {
 }
 
 hr {
-  margin-top: 2rem;
-  margin-bottom: 2rem;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
 }
 
 .order-card {
@@ -64,52 +64,52 @@ hr {
     color:#FFF;
     margin: 0 auto;
     /*background-color: rgba(255,255,190,1);*/
-    -webkit-transform-style: preserve-3d;   
+    -webkit-transform-style: preserve-3d;
 }
 
 .order-card h3{
-  font-size: 400%;
-  margin-bottom: 50px;
+    font-size: 400%;
+    margin-bottom: 50px;
 }
 
 .node-visualiser {
-  height: 200px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;  
-  background-origin: content-box;
-  background-clip: padding-box;
-  border: 10px solid transparent;
+    height: 200px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-origin: content-box;
+    background-clip: padding-box;
+    border: 10px solid transparent;
 }
 
 .trouble-node{
-  border-color: #C1101F; 
-  border-width: 10px; 
-  border-style : solid ;
+    border-color: #C1101F;
+    border-width: 10px;
+    border-style : solid ;
 }
 
 #node1{
-  background-color: rgba(235,73,113,1);
-  background-image: url("img/server_icon.png");
+    background-color: rgba(235,73,113,1);
+    background-image: url("img/server_icon.png");
 
 }
 #node2{
-  background-color: rgba(0,185,190,1);
-  background-image: url("img/server_icon.png");
+    background-color: rgba(0,185,190,1);
+    background-image: url("img/server_icon.png");
 }
 
 #node3{
-  background-color: rgba(179,108,219,1);
-  background-image: url("img/server_icon.png");
+    background-color: rgba(179,108,219,1);
+    background-image: url("img/server_icon.png");
 }
 #node4{
-  background-color: rgba(0,116,224,1);
-  background-image: url("img/query_server_icon.png");
+    background-color: rgba(0,116,224,1);
+    background-image: url("img/query_server_icon.png");
 
 }
 #node5{
-  background-color: rgba(252, 156, 12,1);
-  background-image: url("img/fts_server_icon.png");
+    background-color: rgba(252, 156, 12,1);
+    background-image: url("img/fts_server_icon.png");
 
 }
 #aws-badge{
@@ -122,16 +122,16 @@ hr {
 
 
 .shop-item{
-height: 150px;
- background-repeat: no-repeat;
-  background-size: contain;
-    background-position: center;  
-/*  background-origin: content-box;
-*/}
+    height: 150px;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    /*  background-origin: content-box;
+    */}
 .orange-gradient {
-  background: rgb(235,73,113);
-  background: -moz-linear-gradient(left, rgba(235,73,113,1) 1%, rgba(252,156,12,1) 99%);
-  background: -webkit-linear-gradient(left, rgba(235,73,113,1) 1%,rgba(252,156,12,1) 99%);
-  background: linear-gradient(to right, rgba(235,73,113,1) 1%,rgba(252,156,12,1) 99%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eb4971', endColorstr='#fc9c0c',GradientType=1 );
+    background: rgb(235,73,113);
+    background: -moz-linear-gradient(left, rgba(235,73,113,1) 1%, rgba(252,156,12,1) 99%);
+    background: -webkit-linear-gradient(left, rgba(235,73,113,1) 1%,rgba(252,156,12,1) 99%);
+    background: linear-gradient(to right, rgba(235,73,113,1) 1%,rgba(252,156,12,1) 99%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eb4971', endColorstr='#fc9c0c',GradientType=1 );
 }
