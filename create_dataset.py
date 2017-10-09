@@ -1,4 +1,5 @@
 #!/usr/bin/env - python
+from __future__ import print_function
 
 from couchbase.bucket import Bucket
 import settings
@@ -122,3 +123,4 @@ def add_products():
 if __name__ == '__main__':
     add_products()
     check_and_create_view()
+    print("Successfully populated dataset")
