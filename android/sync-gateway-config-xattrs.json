@@ -200,7 +200,7 @@ function(doc, oldDoc){
     }
 
     channel(username);
-  } else if (getType() == "shopping-basket")
+  } else if (getType() == "order")
    {
 log("Found a basket");
 }
