@@ -94,7 +94,7 @@ def check_and_create_view():
     mgr.design_create(settings.DDOC_NAME, design_doc, use_devmode=False)
     res = SDK_CLIENT.query(settings.DDOC_NAME, settings.VIEW_NAME)
     for row in res:
-        print row
+        print (row)
 
 
 list_doc = {"type": "product-list", "owner": "david",

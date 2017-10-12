@@ -11,12 +11,15 @@ import tornado.web
 import tornado.websocket
 import tornado.platform.twisted
 from tornado.httpclient import AsyncHTTPClient, HTTPRequest
+
+#install this before importing anything else, or VERY BAD THINGS happen
+tornado.platform.twisted.install()
+
 from txcouchbase.bucket import Bucket
 
 import cb_status
 import settings
 
-tornado.platform.twisted.install()
 
 socket_list = []
 bucket_name = settings.BUCKET_NAME
