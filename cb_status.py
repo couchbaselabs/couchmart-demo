@@ -110,7 +110,11 @@ def fts_node():
     response = yield get_url(SERVICE_URL)
     for node_info in response["nodesExt"]:
         if 'fts' in node_info['services']:
-            raise tornado.gen.Return(node_info['hostname'])
+            if node_info['thisNode']:
+                raise tornado.gen.Return(node)
+            else:
+                raise tornado.gen.Return(node_info['hostname'])
+
     raise tornado.gen.Return(None)
 
 
