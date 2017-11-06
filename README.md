@@ -79,6 +79,31 @@ towards your Sync Gateway.
 5. 'Run' the project, either on a real android device or a simulator.
 
    
+### Demo Queries
+1. Find the most popular products that have been ordered:
 
+    ```
+    SELECT   COUNT(1) `order`, product
+    FROM charlie UNNEST `order` as product
+    WHERE charlie.`type` = "order"
+    GROUP BY product
+    ORDER BY COUNT(1) DESC 
+    LIMIT 5;
+    ```
+    
+2. Find out who had the most expensive shopping basket:
 
+    ```
+    SELECT b.name name, SUM(a.price) price, b.`order` basket FROM charlie b 
+    JOIN charlie a ON KEYS b.`order`
+    WHERE b.type="order"
+    GROUP BY meta(b).id,b.name,b.`order`
+    ORDER BY price DESC
+    LIMIT 10
+    ```
+    
+3. Set a category of items to be out of stock:
 
+    ```
+    UPDATE charlie SET stock=0 WHERE category="drinks"
+    ```
