@@ -9,6 +9,7 @@
       },
       "server": "http://dhaikney-server-1:8091",
       "bucket": "charlie",
+	"username":"charlie",
       "password": "password",
       "users": {
         "david": {"password": "quality", "admin_channels": ["david"]},
