@@ -4,9 +4,7 @@
   "databases": {
     "charlie": {
       "import_docs": "continuous",
-      "unsupported": {
-        "enable_extended_attributes": true
-      },
+      "enable_shared_bucket_access": true,
       "server": "http://dhaikney-server-1:8091",
       "bucket": "charlie",
 	"username":"charlie",
