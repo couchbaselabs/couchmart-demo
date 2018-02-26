@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from collections import deque
 import datetime
+import random
 import time
 import urllib
 
@@ -33,7 +34,7 @@ else:
 
 bucket = Bucket('couchbase://{0}/{1}'.format(node, bucket_name),
                 username=user, password=password)
-fts_node = None
+fts_nodes = None
 fts_enabled = False
 nodes = []
 n1ql_enabled = False
@@ -152,13 +153,14 @@ class SearchHandler(tornado.web.RequestHandler):
     @tornado.gen.coroutine
     def get(self):
 
-        if fts_node:
+        if fts_nodes:
             query = self.get_query_argument('q')
             query = query.replace('"', r'')
             query = urllib.quote(query)
             terms = query.split()
             query = ' '.join(["{}~1".format(term) for term in terms])
             data = '{"query": {"query": "' + query + '"}, "highlight": null, "fields": null, "facets": null, "explain": false}'
+            fts_node = random.choice(fts_nodes)
             request = HTTPRequest(
                 url='http://{}:8094/api/index/English/query'.format(fts_node),
                 method='POST', body=data, auth_username=settings.ADMIN_USER,
@@ -194,13 +196,13 @@ class FilterHandler(tornado.web.RequestHandler):
 
 @tornado.gen.coroutine
 def update_cb_status():
-    global nodes, fts_enabled, n1ql_enabled, xdcr_enabled, fts_node
+    global nodes, fts_enabled, n1ql_enabled, xdcr_enabled, fts_nodes
     # Update the cached node info every 500ms
     while True:
         nodes = yield cb_status.get_node_status()
         n1ql_enabled = yield cb_status.n1ql_enabled()
         xdcr_enabled = yield cb_status.xdcr_enabled()
-        fts_node = yield cb_status.fts_node()
+        fts_nodes = yield cb_status.fts_nodes()
         fts_enabled = yield cb_status.fts_enabled()
         yield tornado.gen.sleep(0.5)
 
@@ -222,7 +224,7 @@ def make_app():
 if __name__ == "__main__":
     print "Running at http://localhost:8888"
     app = make_app()
-    app.listen(8888)
+    app.listen(8000)
 
     tornado.ioloop.IOLoop.current().spawn_callback(update_cb_status)
     tornado.ioloop.IOLoop.current().start()

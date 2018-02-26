@@ -10,16 +10,17 @@ import settings
 from create_dataset import PRODUCTS as PRODUCTS
 
 if settings.AWS:
-    node = settings.AWS_NODES[0]
+    NODES = settings.AWS_NODES
 else:
-    node = settings.AZURE_NODES[0]
-HOST = "http://{}:8091".format(node)
-BUCKET_URL = HOST + "/pools/default/buckets"
-NODE_URL = HOST + "/pools/default/serverGroups"
-INDEX_URL = HOST + "/indexStatus"
-SERVICE_URL = HOST + "/pools/default/nodeServices"
-FTS_URL = "http://{}:8094/api/index/{}"
-XDCR_URL = HOST + "/pools/default/remoteClusters"
+    NODES = settings.AZURE_NODES
+HOST_FORMAT = "http://{}:8091"
+
+BUCKET_URL = "/pools/default/buckets"
+NODE_URL = "/pools/default/serverGroups"
+INDEX_URL = "/indexStatus"
+SERVICE_URL = "/pools/default/nodeServices"
+FTS_URL = "/api/index/English"
+XDCR_URL = "/pools/default/remoteClusters"
 USERNAME = settings.ADMIN_USER
 PASSWORD = settings.ADMIN_PASS
 
@@ -28,7 +29,8 @@ user = settings.USERNAME
 password = settings.PASSWORD
 
 aws = settings.AWS
-bucket = Bucket('couchbase://{0}/{1}'.format(node, bucket_name), username=user,
+bucket = Bucket('couchbase://{0}/{1}'.format(",".join(NODES), bucket_name),
+                username=user,
                 password=password)
 http_client = AsyncHTTPClient()
 
@@ -41,21 +43,24 @@ def get_image_for_product(product):
 
 
 @tornado.gen.coroutine
-def get_url(target_url, raise_exception=False):
+def get_url(endpoint, host_list=NODES, raise_exception=False, use_format=True):
     while True:
-        request = HTTPRequest(
-            url=target_url,
-            auth_username=USERNAME,
-            auth_password=PASSWORD,
-            auth_mode='basic', request_timeout=0.3)
-        try:
-            response = yield http_client.fetch(request)
-            raise tornado.gen.Return(tornado.escape.json_decode(response.body))
-        except tornado.httpclient.HTTPError as e:
-            if raise_exception:
-                raise
-            print ("Could not retrieve URL: " + str(target_url) + str(e))
-            yield tornado.gen.sleep(1)
+        for host in host_list:
+            host = HOST_FORMAT.format(host) if use_format else host
+            target_url = host + endpoint
+            request = HTTPRequest(
+                url=target_url,
+                auth_username=USERNAME,
+                auth_password=PASSWORD,
+                auth_mode='basic', request_timeout=0.3)
+            try:
+                response = yield http_client.fetch(request)
+                raise tornado.gen.Return((tornado.escape.json_decode(response.body), host))
+            except tornado.httpclient.HTTPError as e:
+                if raise_exception:
+                    raise
+                print ("Could not retrieve URL: " + str(target_url) + str(e))
+                yield tornado.gen.sleep(1)
 
 
 # Returns a list of nodes and their statuses
@@ -69,7 +74,8 @@ def get_node_status():
         raise tornado.gen.Return(node_list)
 
     kv_nodes = index = 0
-    node_response = yield get_url(NODE_URL)
+    node_response, _ = yield get_url(NODE_URL)
+
     for node_info in node_response['groups'][0]['nodes']:
         if "kv" in node_info['services']:
             index = kv_nodes
@@ -106,26 +112,28 @@ def get_node_status():
 
 
 @tornado.gen.coroutine
-def fts_node():
-    response = yield get_url(SERVICE_URL)
+def fts_nodes():
+    response, node = yield get_url(SERVICE_URL)
+    fts_nodes = []
     for node_info in response["nodesExt"]:
         if 'fts' in node_info['services']:
             if 'thisNode' in node_info and node_info['thisNode']:
-                raise tornado.gen.Return(node)
+                fts_nodes.append(node)
             else:
-                raise tornado.gen.Return(node_info['hostname'])
+                fts_nodes.append(node_info['hostname'])
 
-    raise tornado.gen.Return(None)
+    raise tornado.gen.Return(fts_nodes)
 
 
 @tornado.gen.coroutine
 def fts_enabled():
-    node_to_query = yield fts_node()
-    if not node:
+    nodes_to_query = yield fts_nodes()
+    nodes_to_query = ["http://{}:8094".format(node) for node in nodes_to_query]
+    if not nodes_to_query:
         raise tornado.gen.Return(False)
 
     try:
-        yield get_url(FTS_URL.format(node_to_query, 'English'),
+        yield get_url(FTS_URL, use_format=False, host_list=nodes_to_query,
                       raise_exception=True)
     except Exception:
         raise tornado.gen.Return(False)
@@ -135,7 +143,7 @@ def fts_enabled():
 
 @tornado.gen.coroutine
 def n1ql_enabled():
-    index_response = yield get_url(INDEX_URL)
+    index_response, _ = yield get_url(INDEX_URL)
     raise tornado.gen.Return('indexes' in index_response and any(
         index['index'] == u'category' and index['status'] == u'Ready' for index
         in index_response['indexes']))
@@ -145,5 +153,5 @@ def n1ql_enabled():
 def xdcr_enabled():
     if not aws:
         raise tornado.gen.Return(True)
-    xdcr_response = yield get_url(XDCR_URL)
+    xdcr_response, _ = yield get_url(XDCR_URL)
     raise tornado.gen.Return(len(xdcr_response) > 0)
