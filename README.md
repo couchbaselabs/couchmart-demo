@@ -53,7 +53,7 @@ display the correct output in all cases.
 2. Create the following index:
 
     ```
-    CREATE INDEX category ON <bucket>(category)
+    CREATE INDEX category ON couchmart(category)
     ```
 
 ### Search Setup
@@ -84,8 +84,8 @@ towards your Sync Gateway.
 
     ```
     SELECT   COUNT(1) `order`, product
-    FROM charlie UNNEST `order` as product
-    WHERE charlie.`type` = "order"
+    FROM couchmart UNNEST `order` as product
+    WHERE couchmart.`type` = "order"
     GROUP BY product
     ORDER BY COUNT(1) DESC 
     LIMIT 5;
@@ -94,8 +94,8 @@ towards your Sync Gateway.
 2. Find out who had the most expensive shopping basket:
 
     ```
-    SELECT b.name name, SUM(a.price) price, b.`order` basket FROM charlie b 
-    JOIN charlie a ON KEYS b.`order`
+    SELECT b.name name, SUM(a.price) price, b.`order` basket FROM couchmart b 
+    JOIN couchmart a ON KEYS b.`order`
     WHERE b.type="order"
     GROUP BY meta(b).id,b.name,b.`order`
     ORDER BY price DESC
@@ -105,5 +105,5 @@ towards your Sync Gateway.
 3. Set a category of items to be out of stock:
 
     ```
-    UPDATE charlie SET stock=0 WHERE category="drinks"
+    UPDATE couchmart SET stock=0 WHERE category="drinks"
     ```
