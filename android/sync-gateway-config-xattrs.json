@@ -2,15 +2,15 @@
   "interface":":4984",
   "log": ["HTTP", "Auth"],
   "databases": {
-    "charlie": {
+    "couchmart": {
       "import_docs": "continuous",
       "enable_shared_bucket_access": true,
-      "server": "http://dhaikney-server-1:8091",
-      "bucket": "charlie",
-	"username":"charlie",
-      "password": "password",
+      "server": "http://cb_db_hostname:8091",
+      "bucket": "cb_bucket_name",
+      "username":"cb_bucket_username",
+      "password": "cb_bucket_password",
       "users": {
-        "david": {"password": "quality", "admin_channels": ["david"]},
+        "shopper": {"password": "bargains", "admin_channels": ["shopper"]},
         "mod": {"password": "pass", "admin_roles": ["moderator"]},
         "admin": {"password": "password", "admin_roles": ["admin"]}
       },
