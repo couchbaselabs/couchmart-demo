@@ -46,7 +46,7 @@ public class Application extends android.app.Application {
     private Boolean mLoginFlowEnabled = true;
     private Boolean mEncryptionEnabled = false;
     private Boolean mSyncEnabled = true;
-    private String mSyncGatewayUrl = "http://146.148.86.206:4984/charlie/";
+    private String mSyncGatewayUrl = "http://localhost:4984/couchmart/";
     private Boolean mUsePrebuiltDb = false;
     private Boolean mConflictResolution = false;
 
@@ -135,7 +135,7 @@ public class Application extends android.app.Application {
     }
 
     private void openDatabase(String username, String key, String newKey) {
-        String dbname = username;
+        String dbname = "couchmart";
         DatabaseOptions options = new DatabaseOptions();
         options.setCreate(true);
 
