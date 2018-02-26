@@ -10,7 +10,7 @@
       "username":"cb_bucket_username",
       "password": "cb_bucket_password",
       "users": {
-        "shopper": {"password": "bargains", "admin_channels": ["shopper"]},
+        "david": {"password": "quality", "admin_channels": ["david"]},
         "mod": {"password": "pass", "admin_roles": ["moderator"]},
         "admin": {"password": "password", "admin_roles": ["admin"]}
       },
