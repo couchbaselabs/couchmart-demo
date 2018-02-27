@@ -14,8 +14,6 @@ if settings.AWS:
 else:
     BOOTSTRAP_NODES = settings.AZURE_NODES
 
-HOST_FORMAT = "http://{}:8091"
-
 BUCKET_URL = "/pools/default/buckets"
 NODE_URL = "/pools/default/serverGroups"
 INDEX_URL = "/indexStatus"
@@ -45,11 +43,11 @@ def get_image_for_product(product):
 
 
 @tornado.gen.coroutine
-def get_url(endpoint, host_list=bucket.server_nodes, raise_exception=False,
-            use_format=True):
+def get_url(endpoint, host_list=bucket.server_nodes, raise_exception=False):
+    exceptions = []
     while True:
         for host in host_list:
-            host = HOST_FORMAT.format(host) if use_format else host
+            host = "http://" + host
             target_url = host + endpoint
             request = HTTPRequest(
                 url=target_url,
@@ -60,10 +58,15 @@ def get_url(endpoint, host_list=bucket.server_nodes, raise_exception=False,
                 response = yield http_client.fetch(request)
                 raise tornado.gen.Return((tornado.escape.json_decode(response.body), host))
             except tornado.httpclient.HTTPError as e:
-                if raise_exception:
-                    raise
                 print ("Could not retrieve URL: " + str(target_url) + str(e))
-                yield tornado.gen.sleep(1)
+                exceptions.append(e)
+
+        if exceptions == len(host_list) and raise_exception:
+            raise exceptions[0]
+        else:
+            exceptions = []
+
+        yield tornado.gen.sleep(1)
 
 
 # Returns a list of nodes and their statuses
@@ -131,12 +134,12 @@ def fts_nodes():
 @tornado.gen.coroutine
 def fts_enabled():
     nodes_to_query = yield fts_nodes()
-    nodes_to_query = ["http://{}:8094".format(node) for node in nodes_to_query]
+    nodes_to_query = ["{}:8094".format(node) for node in nodes_to_query]
     if not nodes_to_query:
         raise tornado.gen.Return(False)
 
     try:
-        yield get_url(FTS_URL, use_format=False, host_list=nodes_to_query,
+        yield get_url(FTS_URL, host_list=nodes_to_query,
                       raise_exception=True)
     except Exception:
         raise tornado.gen.Return(False)
