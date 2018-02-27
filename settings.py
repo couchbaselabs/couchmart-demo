@@ -17,3 +17,5 @@ ADMIN_PASS = "password"
 DDOC_NAME = "orders"
 # Name of the view
 VIEW_NAME = "by_timestamp"
+# URL of the site
+DISPLAY_URL = "bit.ly/cbrevolution"

@@ -126,7 +126,8 @@ class ShopHandler(tornado.web.RequestHandler):
     def get(self):
         items = yield bucket.get("items")
         items = yield bucket.get_multi(items.value['items'])
-        self.render("www/shop.html", items=items)
+        self.render("www/shop.html", items=items,
+                    display_url=settings.DISPLAY_URL)
 
 
 class SubmitHandler(tornado.web.RequestHandler):
