@@ -1,4 +1,4 @@
-BUCKET_NAME = "charlie"
+BUCKET_NAME = "couchmart"
 # The list of nodes to use as 'AWS' nodes
 AWS_NODES = ["10.142.170.101", "10.142.170.102"]
 # The list of nodes to use as 'Azure' nodes
@@ -6,7 +6,7 @@ AZURE_NODES = [""]
 # Whether the current cluster is on AWS
 AWS = True
 # Username of the data user
-USERNAME = "charlie"
+USERNAME = "Administrator"
 # Password of the data user
 PASSWORD = "password"
 # Administrator username
