@@ -18,9 +18,9 @@ $( ".submit-btn" ).click(function() {
     });
 
     $.post( "/submit_order",
-        JSON.stringify({
+        {
             name: name_box.val(),
-            order: orders}),
+            order: orders},
         function( data ) {
             alert("Order submitted!")
         })
@@ -120,7 +120,7 @@ $(".type-btn").click(function(){
                 $(this).parent().show();
             }
         });
-    });
+    }).fail(function (){alert('Error submitting filter.')});
 });
 
 $(".type-row").hover(function(){
@@ -173,46 +173,4 @@ $(document).ready(function(){
         }
     });
 });
-
-window.onload = function ShopSocket(){
-
-    if ("WebSocket" in window) {
-        // Let us open a web socket
-        var ws = new WebSocket("ws://" + location.host + "/nodestatus");
-        ws.onopen = function() {
-            console.log("started");
-            // Web Socket is connected, send data using send()
-            ws.send("Shop Socket Connected");
-        };
-
-        ws.onmessage = function (evt)
-        {
-            var msg = JSON.parse(evt.data);
-            if (msg['fts']){
-                $(".search-container").show();
-            } else {
-                $(".search-container").hide();
-            }
-
-            if (msg['n1ql']){
-                $(".type-row").show();
-            } else {
-                $(".type-row").hide();
-            }
-            console.log("received: "+msg)
-
-        };
-
-        ws.onclose = function()
-        {
-            // websocket is closed.
-            setTimeout(function(){ShopSocket()}, 5000);
-        };
-    }
-    else
-    {
-        // The browser doesn't support WebSocket
-        alert("WebSocket NOT supported by your Browser!");
-    }
-};
 
