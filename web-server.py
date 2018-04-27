@@ -9,7 +9,7 @@ import couchbase.fulltext as FT
 app = Flask(__name__)
 
 # This is step 1, connect to the bucket
-bkt = Bucket('couchbase://localhost/matt', password='password')
+bkt = Bucket('couchbase://localhost/couchmart', username='Adminstrator', password='password')
 
 
 @app.route('/', methods=['GET'])
@@ -65,4 +65,4 @@ def search():
     print 'Found matches', ', '.join(keys)
     return jsonify({'keys': keys})
 
-app.run()
+app.run(host='0.0.0.0',port=8080)
