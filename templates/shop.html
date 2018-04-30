@@ -54,13 +54,15 @@
                     </div>
 
                     <div class="row products">
-                        {% set keys = items.keys() %}
-                        {% set foo = random.shuffle(keys) %}
-                        {% for key in keys %}
+                        {% if items %}
+                          {% set keys = items.keys() %}
+                          {% set foo = random.shuffle(keys) %}
+                          {% for key in keys %}
                         <div class="col-md-3 col-sm-4 col-6 col-product">
                             <button class="btn btn-primary btn-product {{ random.choice(['blue', 'lightblue', 'purple', 'red', 'green'])}}-bg" type="button" data-toggle="button" value="{{ key }}" title="{{ items[key].value['description'] }}">{{ items[key].value['name'] }}<br><img src="/static/img/{{items[key].value['image']}}"></button>
                         </div>
-                        {% endfor %}
+                          {% endfor %}
+                        {% endif %}
 
                     </div>
 

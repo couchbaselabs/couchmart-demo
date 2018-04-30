@@ -10,13 +10,19 @@ import couchbase.fulltext as FT
 app = Flask(__name__)
 
 # Lab 2: Connect to the cluster
+cluster = Cluster('couchbase://')
+authenticator = PasswordAuthenticator('Administrator', 'password')
+cluster.authenticate(authenticator)
+bucket = cluster.open_bucket('couchmart')
 
 @app.route('/', methods=['GET'])
 def shop():
     # Lab 2: Retrieve items document from the bucket
-
+    itemsDoc = bucket.get("items")
+    items = bucket.get_multi(itemsDoc.value['items'])
+    
     return render_template('shop.html', random=random, sorted=sorted,
-                           #items=items,
+                           items=items, 
                            display_url="")
 
 
