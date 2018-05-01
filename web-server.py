@@ -16,8 +16,7 @@ def shop():
     # Lab 2: Retrieve items document from the bucket
 
     return render_template('shop.html', random=random, sorted=sorted,
-                           #items=items,
-                           display_url="")
+                           display_url="", items=None)
 
 
 @app.route('/submit_order', methods=['POST'])
