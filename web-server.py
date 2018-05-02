@@ -1,11 +1,14 @@
 #!/usr/bin/env python
 import random
+import datetime
+import time
 
 from flask import Flask, render_template, request, jsonify
 from werkzeug.exceptions import BadRequest
 from couchbase.cluster import Cluster
 from couchbase.cluster import PasswordAuthenticator
 import couchbase.fulltext as FT
+import couchbase.exceptions as E
 
 app = Flask(__name__)
 
@@ -23,10 +26,14 @@ def shop():
 def submit_order():
     name = request.form.get('name')
     order = request.form.getlist('order[]')
+    print 'name=', name
+    print 'order=', order
+
+    if len(order) != 5:
+        raise BadRequest('Must have 5 items in the order')
 
     # Lab 3: Insert the order document into the bucket
 
-    print name, 'ordered', order
     return '', 204
 
 
@@ -34,8 +41,9 @@ def submit_order():
 def filter_items():
     filter_type = request.args.get('type')
     keys = []
+    print 'type=', filter_type
 
-    # Lab 4: Use N1QL to query the bucket
+    # Lab 4: Use N1QL to retrieve products that match the requested category
 
     print 'Found results:', ', '.join(keys), 'for type', filter_type
     return jsonify({'keys': keys})
