@@ -1,11 +1,14 @@
 #!/usr/bin/env python
 import random
+import datetime
+import time
 
 from flask import Flask, render_template, request, jsonify
 from werkzeug.exceptions import BadRequest
 from couchbase.cluster import Cluster
 from couchbase.cluster import PasswordAuthenticator
 import couchbase.fulltext as FT
+import couchbase.exceptions as E
 
 app = Flask(__name__)
 
@@ -36,6 +39,19 @@ def submit_order():
         raise BadRequest('Must have 5 items in the order')
 
     # Lab 3: Insert the order document into the bucket
+    key = "Order::{}::{}".format(name,
+                                 datetime.datetime.utcnow().isoformat())
+    data = {
+        'type':'order',
+        'name':name,
+        'ts':int(time.time()),
+        'order':order
+    }
+    print 'key=', key, '- data=', data
+    try:
+        bucket.upsert(key, data)
+    except E:
+        raise BadRequest('Failed to submit order')
 
     return '', 204
 
