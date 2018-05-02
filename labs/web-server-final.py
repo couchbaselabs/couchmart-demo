@@ -79,10 +79,8 @@ def search():
     print 'User searched for', search_term
     keys = []
 
-    # This is the part the user has to fill in
-    # Bonus points for fuzzy searching
-    # They can make this as simple or complex as they want
-    result = bucket.search('matt', FT.MatchQuery(search_term, fuzziness=1))
+    # Lab 5: Use the English FTS index to search with the term provided
+    result = bucket.search('English', FT.MatchQuery(search_term, fuzziness=1))
     for row in result:
         keys.append(row['id'])
 
