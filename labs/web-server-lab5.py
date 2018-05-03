@@ -80,6 +80,9 @@ def search():
     keys = []
 
     # Lab 5: Use the English FTS index to search with the term provided
+    result = bucket.search('English', FT.MatchQuery(search_term, fuzziness=1))
+    for row in result:
+        keys.append(row['id'])
 
     print 'Found matches', ', '.join(keys)
     return jsonify({'keys': keys})

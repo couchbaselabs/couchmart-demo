@@ -1,11 +1,14 @@
 #!/usr/bin/env python
 import random
+import datetime
+import time
 
 from flask import Flask, render_template, request, jsonify
 from werkzeug.exceptions import BadRequest
 from couchbase.cluster import Cluster
 from couchbase.cluster import PasswordAuthenticator
 import couchbase.fulltext as FT
+import couchbase.exceptions as E
 
 app = Flask(__name__)
 
@@ -58,12 +61,7 @@ def search():
     print 'User searched for', search_term
     keys = []
 
-    # This is the part the user has to fill in
-    # Bonus points for fuzzy searching
-    # They can make this as simple or complex as they want
-    result = bucket.search('matt', FT.MatchQuery(search_term, fuzziness=1))
-    for row in result:
-        keys.append(row['id'])
+    # Lab 5: Use the English FTS index to search with the term provided
 
     print 'Found matches', ', '.join(keys)
     return jsonify({'keys': keys})
