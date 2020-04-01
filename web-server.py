@@ -4,6 +4,8 @@ import datetime
 import random
 import time
 import urllib
+import json
+import requests
 
 import tornado.gen
 import tornado.escape
@@ -144,7 +146,16 @@ class SubmitHandler(tornado.web.RequestHandler):
                                      datetime.datetime.utcnow().isoformat())
         data['ts'] = int(time.time())
         data['type'] = "order"
-        yield bucket.upsert(key, data)
+
+        #do an RPC to the submit acid java service
+        url = 'http://127.0.0.1:8080/submitorder'
+        payload = {key: data}
+
+        response = requests.post(url, json=payload)
+
+        import pdb
+        pdb.set_trace()
+        yield response
 
 
 class SearchHandler(tornado.web.RequestHandler):
