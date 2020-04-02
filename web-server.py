@@ -130,10 +130,15 @@ class ShopHandler(tornado.web.RequestHandler):
         items = yield bucket.get_multi(items.value['items'])
         self.render("www/shop.html", items=items)
 
+class SubmitNew(tornado.web.RequestHandler):
+    @tornado.gen.coroutine
+    def post(self):
+        self.set_status(200, 'OK')
 
 class SubmitHandler(tornado.web.RequestHandler):
     @tornado.gen.coroutine
     def post(self):
+
         data = tornado.escape.json_decode(self.request.body)
 
         # Someone has sent us an invalid order, send a 400
@@ -147,15 +152,23 @@ class SubmitHandler(tornado.web.RequestHandler):
         data['ts'] = int(time.time())
         data['type'] = "order"
 
+        orderJson = tornado.escape.json_encode({key:data})
+
         #do an RPC to the submit acid java service
         url = 'http://127.0.0.1:8080/submitorder'
-        payload = {key: data}
 
-        response = requests.post(url, json=payload)
+        #using the same method as the query post
+        #get payload in string format
+        #Key is already a string
+        #data needs to form into string
 
-        import pdb
-        pdb.set_trace()
-        yield response
+        http_client = AsyncHTTPClient()
+        request = HTTPRequest(
+            url=url,
+            method='POST',
+            body=orderJson,
+            headers={'Content-Type': 'application/json'})
+        yield http_client.fetch(request)
 
 
 class SearchHandler(tornado.web.RequestHandler):
