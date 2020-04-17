@@ -152,23 +152,27 @@ class SubmitHandler(tornado.web.RequestHandler):
         data['ts'] = int(time.time())
         data['type'] = "order"
 
-        orderJson = tornado.escape.json_encode({key:data})
+        if not settings.ACID:
+            yield bucket.upsert(key, data)
+        else:
+            orderJson = tornado.escape.json_encode({key:data})
 
-        #do an RPC to the submit acid java service
-        url = 'http://127.0.0.1:8080/submitorder'
+            url = settings.RPC_ADDRESS
 
-        #using the same method as the query post
-        #get payload in string format
-        #Key is already a string
-        #data needs to form into string
+            http_client = AsyncHTTPClient()
+            request = HTTPRequest(
+                url=url,
+                method='POST',
+                body=orderJson,
+                headers={'Content-Type': 'application/json'})
+            response = yield http_client.fetch(request)
 
-        http_client = AsyncHTTPClient()
-        request = HTTPRequest(
-            url=url,
-            method='POST',
-            body=orderJson,
-            headers={'Content-Type': 'application/json'})
-        yield http_client.fetch(request)
+            if response.error:
+                response = response.error
+            else:
+                response = response.body
+            self.set_header('Content-Type', 'application/json')
+            self.finish(response)
 
 
 class SearchHandler(tornado.web.RequestHandler):
@@ -246,9 +250,9 @@ def make_app():
 
 
 if __name__ == "__main__":
-    print "Running at http://localhost:8888"
+    print "Running at http://localhost:8080"
     app = make_app()
-    app.listen(8888)
+    app.listen(8080)
 
     tornado.ioloop.IOLoop.current().spawn_callback(update_cb_status)
     tornado.ioloop.IOLoop.current().start()
