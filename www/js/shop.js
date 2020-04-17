@@ -17,16 +17,40 @@ $( ".submit-btn" ).click(function() {
         orders.push($(this).val())
     });
 
-    $.post( "/submit_order",
-        JSON.stringify({
+    $.ajax({
+    type: "POST",
+    url: "/submit_order",
+    contentType: 'application/json',
+    data: JSON.stringify({
             name: name_box.val(),
             order: orders}),
-        function( data ) {
-            alert("Order submitted!")
-        })
-        .fail(function () {
-            alert("Error submitting order.")
-        });
+    dataType: 'json',
+    timeout: 12000, // 12 seconds because server is so slow
+    headers: {
+        Accept: "application/json"
+    }
+    }).done(function( response, status, jqXHR ) {
+        if(response.OrderError) {
+            alert(response.OrderError);
+        } else {
+            alert("Order submitted! ");
+        }
+
+    }).fail(function( response, status, jqXHR ) {
+        alert("Error submitting order.");
+    });
+
+//    $.post( "/submit_order",
+//        JSON.stringify({
+//            name: name_box.val(),
+//            order: orders}),
+//        function( data,status ) {
+//            //alert("Order submitted!")
+//            alert("Data: " + data.responseText + "\nStatus: " + status)
+//        })
+//        .fail(function () {
+//            alert("Error submitting order.")
+//        });
 
     active_buttons.removeClass("active");
 });
