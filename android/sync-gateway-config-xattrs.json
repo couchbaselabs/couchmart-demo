@@ -18,6 +18,7 @@
         "moderator": {},
         "admin": {}
       },
+	"use_views": true,
       "sync": `
 function(doc, oldDoc){
   /* Type validation */
