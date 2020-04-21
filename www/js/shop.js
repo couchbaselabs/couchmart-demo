@@ -40,18 +40,6 @@ $( ".submit-btn" ).click(function() {
         alert("Error submitting order.");
     });
 
-//    $.post( "/submit_order",
-//        JSON.stringify({
-//            name: name_box.val(),
-//            order: orders}),
-//        function( data,status ) {
-//            //alert("Order submitted!")
-//            alert("Data: " + data.responseText + "\nStatus: " + status)
-//        })
-//        .fail(function () {
-//            alert("Error submitting order.")
-//        });
-
     active_buttons.removeClass("active");
 });
 
