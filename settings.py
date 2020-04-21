@@ -1,6 +1,6 @@
 BUCKET_NAME = "couchmart"
 # The list of nodes to use as 'AWS' nodes
-AWS_NODES = ["192.168.33.10"]
+AWS_NODES = ["10.142.170.101", "10.142.170.102"]
 # The list of nodes to use as 'Azure' nodes
 AZURE_NODES = [""]
 # Whether the current cluster is on AWS
@@ -17,3 +17,7 @@ ADMIN_PASS = "password"
 DDOC_NAME = "orders"
 # Name of the view
 VIEW_NAME = "by_timestamp"
+# Use ACID RPC service True/False
+ACID = True
+# Address for RPC ACID service
+RPC_ADDRESS = "http://127.0.0.1:8889/submitorder"

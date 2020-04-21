@@ -250,9 +250,9 @@ def make_app():
 
 
 if __name__ == "__main__":
-    print "Running at http://localhost:8080"
+    print "Running at http://localhost:8888"
     app = make_app()
-    app.listen(8080)
+    app.listen(8888)
 
     tornado.ioloop.IOLoop.current().spawn_callback(update_cb_status)
     tornado.ioloop.IOLoop.current().start()
