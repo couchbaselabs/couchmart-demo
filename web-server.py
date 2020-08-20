@@ -26,13 +26,9 @@ socket_list = []
 bucket_name = settings.BUCKET_NAME
 user = settings.USERNAME
 password = settings.PASSWORD
+nodes = ','.join(settings.AWS_NODES)
 
-if settings.AWS:
-    node = settings.AWS_NODES[0]
-else:
-    node = settings.AZURE_NODES[0]
-
-bucket = Bucket('couchbase://{0}/{1}'.format(node, bucket_name),
+bucket = Bucket('couchbase://{0}/{1}'.format(nodes, bucket_name),
                 username=user, password=password)
 fts_nodes = None
 fts_enabled = False
