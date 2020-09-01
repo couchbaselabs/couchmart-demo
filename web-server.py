@@ -11,10 +11,12 @@ import tornado.ioloop
 import tornado.web
 import tornado.websocket
 import tornado.platform.twisted
-from tornado.httpclient import AsyncHTTPClient, HTTPRequest
 
+import twisted
 #install this before importing anything else, or VERY BAD THINGS happen
-#tornado.platform.twisted.install()
+twisted.internet.asyncioreactor.install()
+
+from tornado.httpclient import AsyncHTTPClient, HTTPRequest
 
 from txcouchbase.cluster import TxCluster, TxBucket
 from couchbase.cluster import ClusterOptions
@@ -34,7 +36,8 @@ nodes = ','.join(settings.AWS_NODES)
 #                username=user, password=password)
 cluster = TxCluster.connect(connection_string='couchbase://{0}'.format(nodes),
                             options=ClusterOptions(PasswordAuthenticator(user, password)))
-#bucket = cluster.TxBucket(bucket_name)
+bucket = cluster.bucket(bucket_name)
+df_coll = bucket.default_collection()
 fts_nodes = None
 fts_enabled = False
 nodes = []
@@ -125,8 +128,12 @@ class LiveOrdersWebSocket(tornado.websocket.WebSocketHandler):
 class ShopHandler(tornado.web.RequestHandler):
     @tornado.gen.coroutine
     def get(self):
-        items = yield cluster.get("items")
-        items = yield cluster.get_multi(items.value['items'])
+
+        items = yield df_coll.get("items")
+        items = yield df_coll.get_multi(items.content['items'])
+        # import pdb
+        # pdb.set_trace()        
+        items = {'product:water':items.get('product:water').content_as[dict]}
         self.render("www/shop.html", items=items)
 
 
