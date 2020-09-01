@@ -4,7 +4,9 @@ import tornado.escape
 import tornado.gen
 import tornado.httpclient
 from tornado.httpclient import AsyncHTTPClient, HTTPRequest
-from txcouchbase.bucket import Bucket
+from txcouchbase.cluster import TxCluster
+from couchbase.cluster import ClusterOptions
+from couchbase_core.cluster import PasswordAuthenticator
 
 import settings
 from create_dataset import PRODUCTS as PRODUCTS
@@ -28,10 +30,8 @@ user = settings.USERNAME
 password = settings.PASSWORD
 
 aws = settings.AWS
-bucket = Bucket('couchbase://{0}/{1}'.format(",".join(BOOTSTRAP_NODES),
-                                             bucket_name),
-                username=user,
-                password=password)
+cluster = TxCluster.connect(connection_string='couchbase://{0}'.format(",".join(BOOTSTRAP_NODES)),
+                            options=ClusterOptions(PasswordAuthenticator(USERNAME, PASSWORD)))
 http_client = AsyncHTTPClient()
 
 
@@ -43,7 +43,7 @@ def get_image_for_product(product):
 
 
 @tornado.gen.coroutine
-def get_url(endpoint, host_list=bucket.server_nodes, raise_exception=False):
+def get_url(endpoint, host_list=cluster.server_nodes, raise_exception=False):
     exceptions = []
     while True:
         for host in host_list:
@@ -74,7 +74,7 @@ def get_url(endpoint, host_list=bucket.server_nodes, raise_exception=False):
 def get_node_status():
     default_status = {"hostname": "n/a", "ops": 0, "status": "out"}
 
-    node_list = [dict(default_status) for _ in xrange(5)]
+    node_list = [dict(default_status) for _ in range(5)]
     if not aws:
         node_list[0]['ops'] = 400
         raise tornado.gen.Return(node_list)

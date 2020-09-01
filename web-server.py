@@ -3,7 +3,7 @@ from collections import deque
 import datetime
 import random
 import time
-import urllib
+import urllib.parse
 
 import tornado.gen
 import tornado.escape
@@ -14,9 +14,11 @@ import tornado.platform.twisted
 from tornado.httpclient import AsyncHTTPClient, HTTPRequest
 
 #install this before importing anything else, or VERY BAD THINGS happen
-tornado.platform.twisted.install()
+#tornado.platform.twisted.install()
 
-from txcouchbase.bucket import Bucket
+from txcouchbase.cluster import TxCluster, TxBucket
+from couchbase.cluster import ClusterOptions
+from couchbase_core.cluster import PasswordAuthenticator
 
 import cb_status
 import settings
@@ -28,8 +30,11 @@ user = settings.USERNAME
 password = settings.PASSWORD
 nodes = ','.join(settings.AWS_NODES)
 
-bucket = Bucket('couchbase://{0}/{1}'.format(nodes, bucket_name),
-                username=user, password=password)
+#cluster = TxCluster('couchbase://{0}'.format(nodes),
+#                username=user, password=password)
+cluster = TxCluster.connect(connection_string='couchbase://{0}'.format(nodes),
+                            options=ClusterOptions(PasswordAuthenticator(user, password)))
+#bucket = cluster.TxBucket(bucket_name)
 fts_nodes = None
 fts_enabled = False
 nodes = []
@@ -44,7 +49,7 @@ class NodeStatusHandler(tornado.web.RequestHandler):
 
 class CBStatusWebSocket(tornado.websocket.WebSocketHandler):
     def open(self):
-        print self
+        print (self)
         if self not in socket_list:
             socket_list.append(self)
             self.red = 255
@@ -55,7 +60,7 @@ class CBStatusWebSocket(tornado.websocket.WebSocketHandler):
             self.get_node_status()
 
     def on_message(self, message):
-        print "on_message received:" + message
+        print ("on_message received:" + message)
 
     def on_close(self):
         print("WebSocket closed")
@@ -80,7 +85,7 @@ class LiveOrdersWebSocket(tornado.websocket.WebSocketHandler):
             self.callback.start()
 
     def on_message(self, message):
-        print "on_message received:" + message
+        print ("on_message received:" + message)
 
     def on_close(self):
         print("WebSocket closed")
@@ -88,14 +93,14 @@ class LiveOrdersWebSocket(tornado.websocket.WebSocketHandler):
 
     @tornado.gen.coroutine
     def send_orders(self):
-        res = yield bucket.queryAll(settings.DDOC_NAME, settings.VIEW_NAME,
+        res = yield bucket.view_query(settings.DDOC_NAME, settings.VIEW_NAME,
                                     include_docs=True, descending=False, limit=50,
                                     startkey=self.LATEST_TS, stale=False)
         new_order = False
         for order in res:
             new_order = True
             self.RECENT_ORDERS.appendleft(order.doc.value)
-            print order.key, order.doc.value['name']
+            print (order.key, order.doc.value['name'])
 
         if new_order:
             self.NEXT_CUSTOMER = 0  # back to the start
@@ -120,8 +125,8 @@ class LiveOrdersWebSocket(tornado.websocket.WebSocketHandler):
 class ShopHandler(tornado.web.RequestHandler):
     @tornado.gen.coroutine
     def get(self):
-        items = yield bucket.get("items")
-        items = yield bucket.get_multi(items.value['items'])
+        items = yield cluster.get("items")
+        items = yield cluster.get_multi(items.value['items'])
         self.render("www/shop.html", items=items)
 
 
@@ -140,7 +145,7 @@ class SubmitHandler(tornado.web.RequestHandler):
                                      datetime.datetime.utcnow().isoformat())
         data['ts'] = int(time.time())
         data['type'] = "order"
-        yield bucket.upsert(key, data)
+        yield cluster.upsert(key, data)
 
 
 class SearchHandler(tornado.web.RequestHandler):
@@ -152,7 +157,7 @@ class SearchHandler(tornado.web.RequestHandler):
         if fts_nodes:
             query = self.get_query_argument('q')
             query = query.replace('"', r'')
-            query = urllib.quote(query)
+            query = urllib.parse.quote(query)
             terms = query.split()
             query = ' '.join(["{}~1".format(term) for term in terms])
             data = '{"query": {"query": "' + query + '"}, "highlight": null, "fields": null, "facets": null, "explain": false}'
@@ -179,7 +184,7 @@ class FilterHandler(tornado.web.RequestHandler):
     @tornado.gen.coroutine
     def get(self):
         data = self.get_query_argument('type')
-        results = yield bucket.n1qlQueryAll(
+        results = yield cluster.query(
             'SELECT meta().id FROM {} WHERE category = "{}"'
             .format(bucket_name, data))
 
@@ -218,7 +223,7 @@ def make_app():
 
 
 if __name__ == "__main__":
-    print "Running at http://localhost:8888"
+    print ("Running at http://localhost:8888")
     app = make_app()
     app.listen(8888)
 

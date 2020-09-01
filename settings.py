@@ -1,6 +1,6 @@
 BUCKET_NAME = "couchmart"
 # The list of nodes to use as 'AWS' nodes
-AWS_NODES = ["10.142.170.101", "10.142.170.102"]
+AWS_NODES = ["127.0.0.1"]
 # Whether the current cluster is on AWS
 AWS = True
 # Username of the data user
