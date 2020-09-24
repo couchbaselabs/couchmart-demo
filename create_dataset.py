@@ -15,9 +15,6 @@ if settings.AWS:
 else:
     node = settings.AZURE_NODES[0]
 
-import pdb
-#pdb.set_trace()
-
 cluster = Cluster('couchbase://{0}'.format(node),
                     ClusterOptions(PasswordAuthenticator(user, password)))
 bucket = cluster.bucket(bucket_name)
@@ -125,6 +122,5 @@ def add_products():
 
 if __name__ == '__main__':
     add_products()
-    #pdb.set_trace()
     check_and_create_view()
     print("Successfully populated dataset")

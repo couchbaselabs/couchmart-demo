@@ -61,7 +61,8 @@ def get_url(endpoint, host_list=cluster.server_nodes, raise_exception=False):
                 print ("Could not retrieve URL: " + str(target_url) + str(e))
                 exceptions.append(e)
 
-        if exceptions == len(host_list) and raise_exception:
+
+        if len(exceptions) == len(host_list) and raise_exception:
             raise exceptions[0]
         else:
             exceptions = []
@@ -127,24 +128,23 @@ def fts_nodes():
                 fts_nodes.append(node)
             else:
                 fts_nodes.append(node_info['hostname'])
-
     raise tornado.gen.Return(fts_nodes)
 
 
 @tornado.gen.coroutine
 def fts_enabled():
     nodes_to_query = yield fts_nodes()
-    nodes_to_query = ["{}:8094".format(node) for node in nodes_to_query]
+    nodes_to_query = ["{}:8094".format(node.split(":8091")[0].split("http://")[1]) for node in nodes_to_query]
     if not nodes_to_query:
         raise tornado.gen.Return(False)
-
-    try:
-        yield get_url(FTS_URL, host_list=nodes_to_query,
-                      raise_exception=True)
-    except Exception:
-        raise tornado.gen.Return(False)
     else:
-        raise tornado.gen.Return(True)
+        try:
+            yield get_url(FTS_URL, host_list=nodes_to_query,
+                        raise_exception=True)
+        except Exception:
+            raise tornado.gen.Return(False)
+        else:
+            raise tornado.gen.Return(True)
 
 
 @tornado.gen.coroutine

@@ -102,8 +102,8 @@ class LiveOrdersWebSocket(tornado.websocket.WebSocketHandler):
         new_order = False
         for order in res:
             new_order = True
-            self.RECENT_ORDERS.appendleft(order.doc.value)
-            print (order.key, order.doc.value['name'])
+            self.RECENT_ORDERS.appendleft(order.document.value)
+            print (order.key, order.document.value['name'])
 
         if new_order:
             self.NEXT_CUSTOMER = 0  # back to the start
@@ -128,13 +128,15 @@ class LiveOrdersWebSocket(tornado.websocket.WebSocketHandler):
 class ShopHandler(tornado.web.RequestHandler):
     @tornado.gen.coroutine
     def get(self):
-
         items = yield df_coll.get("items")
         items = yield df_coll.get_multi(items.content['items'])
-        # import pdb
-        # pdb.set_trace()        
-        items = {'product:water':items.get('product:water').content_as[dict]}
-        self.render("www/shop.html", items=items)
+
+        items_dict = {}
+        for item in items:
+            items_dict[item] = items.get(item).content_as[dict]
+        keys = list(items)
+        
+        self.render("www/shop.html", items=items_dict, keys=keys)
 
 
 class SubmitHandler(tornado.web.RequestHandler):
@@ -152,7 +154,7 @@ class SubmitHandler(tornado.web.RequestHandler):
                                      datetime.datetime.utcnow().isoformat())
         data['ts'] = int(time.time())
         data['type'] = "order"
-        yield cluster.upsert(key, data)
+        yield df_coll.upsert(key, data)
 
 
 class SearchHandler(tornado.web.RequestHandler):
@@ -169,6 +171,7 @@ class SearchHandler(tornado.web.RequestHandler):
             query = ' '.join(["{}~1".format(term) for term in terms])
             data = '{"query": {"query": "' + query + '"}, "highlight": null, "fields": null, "facets": null, "explain": false}'
             fts_node = random.choice(fts_nodes)
+            fts_node = fts_node.split("http://")[1].split(":8091")[0]
             request = HTTPRequest(
                 url='http://{}:8094/api/index/English/query'.format(fts_node),
                 method='POST', body=data, auth_username=settings.ADMIN_USER,
