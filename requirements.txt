@@ -1,6 +1,6 @@
 couchbase==3.0.5
-#SDK 3.0.1+ includes tornado
-#tornado==6.0.4
+#SDK 3.0.1+ includes txcouchbase
+#txcouchbase
+tornado==6.0.4
 twisted
-txcouchbase
 service_identity
