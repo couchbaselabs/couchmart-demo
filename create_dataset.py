@@ -1,7 +1,9 @@
 #!/usr/bin/env - python
 from __future__ import print_function
 
-from couchbase.bucket import Bucket
+from couchbase.cluster import Cluster, ClusterOptions
+from couchbase_core.cluster import PasswordAuthenticator
+from couchbase.management.views import DesignDocument, DesignDocumentNamespace, View
 import settings
 import random
 
@@ -13,10 +15,12 @@ if settings.AWS:
 else:
     node = settings.AZURE_NODES[0]
 
-SDK_CLIENT = Bucket('couchbase://{0}/{1}'.format(node, bucket_name),
-                    username=user, password=password)
+cluster = Cluster('couchbase://{0}'.format(node),
+                    ClusterOptions(PasswordAuthenticator(user, password)))
+bucket = cluster.bucket(bucket_name)
+coll = bucket.default_collection()
 
-SDK_CLIENT.timeout = 15
+coll.timeout = 15
 
 LIST_DOC = "david.all_the_products"
 
@@ -76,23 +80,19 @@ PRODUCTS = [
 
 
 def check_and_create_view():
-    design_doc = {
-        'views': {
-            'by_timestamp': {
-                'map': '''
+    view = View('''
                 function(doc, meta) {
                     if (doc.type && doc.type== "order" && doc.ts) {
                         emit(doc.ts, null)
                     }
                     }
-                '''
-                }
-            }
-        }
-
-    mgr = SDK_CLIENT.bucket_manager()
-    mgr.design_create(settings.DDOC_NAME, design_doc, use_devmode=False)
-    res = SDK_CLIENT.query(settings.DDOC_NAME, settings.VIEW_NAME)
+                ''')
+    design_doc = {'by_timestamp':view}
+    mgr = bucket.view_indexes()
+    ddoc = DesignDocument(settings.DDOC_NAME, design_doc)
+    mgr.upsert_design_document(ddoc, DesignDocumentNamespace.PRODUCTION)
+    res = bucket.view_query(settings.DDOC_NAME, settings.VIEW_NAME)
+    print(res)
     for row in res:
         print (row)
 
@@ -102,7 +102,7 @@ list_doc = {"type": "product-list", "owner": "david",
 
 
 def add_products():
-    SDK_CLIENT.upsert(LIST_DOC, list_doc)
+    coll.upsert(LIST_DOC, list_doc)
 
     i = 12000
     items = []
@@ -116,8 +116,8 @@ def add_products():
         i += 1
         product['product'] = product['name'] 
         product['productList'] = {"id": LIST_DOC, "owner": "david"}
-        SDK_CLIENT.upsert(product_id, product)
-    SDK_CLIENT.upsert("items", {"items": items})
+        coll.upsert(product_id, product)
+    coll.upsert("items", {"items": items})
 
 
 if __name__ == '__main__':
