@@ -1,2 +1,5 @@
 couchbase==3.0.1
 tornado==6.0.4
+twisted
+txcouchbase
+service_identity
