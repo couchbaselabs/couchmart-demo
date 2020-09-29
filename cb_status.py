@@ -134,7 +134,7 @@ def fts_nodes():
 @tornado.gen.coroutine
 def fts_enabled():
     nodes_to_query = yield fts_nodes()
-    nodes_to_query = ["{}:8094".format(node.split(":8091")[0].split("http://")[1]) for node in nodes_to_query]
+    nodes_to_query = ["{}:8094".format(node) for node in nodes_to_query]
     if not nodes_to_query:
         raise tornado.gen.Return(False)
     else:
