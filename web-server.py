@@ -171,7 +171,6 @@ class SearchHandler(tornado.web.RequestHandler):
             query = ' '.join(["{}~1".format(term) for term in terms])
             data = '{"query": {"query": "' + query + '"}, "highlight": null, "fields": null, "facets": null, "explain": false}'
             fts_node = random.choice(fts_nodes)
-            fts_node = fts_node.split("http://")[1].split(":8091")[0]
             request = HTTPRequest(
                 url='http://{}:8094/api/index/English/query'.format(fts_node),
                 method='POST', body=data, auth_username=settings.ADMIN_USER,
