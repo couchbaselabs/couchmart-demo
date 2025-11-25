@@ -1,46 +1,14 @@
-#!/usr/bin/env - python
-from __future__ import print_function
+from datetime import timedelta
 
-import random
-
-from couchbase.management.views import DesignDocumentNamespace, DesignDocument, View
-
-import settings
+# needed for any cluster connection
 from cb_connection import cb, cb_coll_default
-
-# bucket_name = settings.BUCKET_NAME
-# user = settings.USERNAME
-# password = settings.PASSWORD
-# if settings.AWS:
-#     node = settings.AWS_NODES[0]
-# else:
-#     node = settings.AZURE_NODES[0]
-
-# # Connect options - authentication
-# auth = PasswordAuthenticator(
-#     username,
-#     password,
-# )
-# timeout_opts = ClusterTimeoutOptions(connect_timeout=timedelta(seconds=15))
-
-# # Get a reference to our cluster
-# # NOTE: For TLS/SSL connection use 'couchbases://<your-ip-address>' instead
-# cluster = Cluster(
-#     'couchbase://{0}/{1}'.format(node, bucket_name),
-#     ClusterOptions(auth, timeout_options=timeout_opts)
-# )
-
-# # Wait until the cluster is ready for use.
-# cluster.wait_until_ready(timedelta(seconds=5))
-
-# # get a reference to our bucket
-# cb = cluster.bucket(bucket_name)
-
-# # Get a reference to the default collection, required for older Couchbase server versions
-# cb_coll_default = cb.default_collection()
+from couchbase.management.views import DesignDocumentNamespace, DesignDocument, View
+import random
+import settings
 
 LIST_DOC = "david.all_the_products"
 
+list_doc = {"type": "product-list", "owner": "david", "name": "big fat shopping list"}
 PRODUCTS = [
     {"name": "burger", "description": "Mmmm. That IS a tasty burger",
      "price": 1.00, "category": "meat", "image": "burger.png", "stock": 100},
@@ -95,6 +63,23 @@ PRODUCTS = [
      "price": 1.00, "category": "british", "image": "marmite.png", "stock": 100},
 ]
 
+def add_products():
+    cb_coll_default.upsert(LIST_DOC, list_doc)
+
+    i = 12000
+    items = []
+    for product in PRODUCTS:
+        product_id = "product:" + product['name'] 
+        items.append(product_id)
+        product['type'] = "product"
+        product['complete'] = False
+        product['price'] = round(random.uniform(0.25, 4.99), 2)
+        product['createdAt'] = i
+        i += 1
+        product['product'] = product['name'] 
+        product['productList'] = {"id": LIST_DOC, "owner": "david"}
+        cb_coll_default.upsert(product_id, product)
+    cb_coll_default.upsert("items", {"items": items})
 
 def check_and_create_view():
     view_manager = cb.view_indexes()
@@ -110,33 +95,10 @@ def check_and_create_view():
     view_manager.upsert_design_document(design_doc, DesignDocumentNamespace.PRODUCTION)
     res = cb.view_query(settings.DDOC_NAME, settings.VIEW_NAME)
     for row in res.rows():
-        print(row)
-
-
-list_doc = {"type": "product-list", "owner": "david",
-            "name": "big fat shopping list"}
-
-
-def add_products():
-    cb_coll_default.upsert(LIST_DOC, list_doc)
-
-    i = 12000
-    items = []
-    for product in PRODUCTS:
-        product_id = "product:" + product['name']
-        items.append(product_id)
-        product['type'] = "product"
-        product['complete'] = False
-        product['price'] = round(random.uniform(0.25, 4.99), 2)
-        product['createdAt'] = i
-        i += 1
-        product['product'] = product['name']
-        product['productList'] = {"id": LIST_DOC, "owner": "david"}
-        cb_coll_default.upsert(product_id, product)
-    cb_coll_default.upsert("items", {"items": items})
-
+        print (row)
 
 if __name__ == '__main__':
     add_products()
     check_and_create_view()
+    res = cb_coll_default.get("items")
     print("Successfully populated dataset")

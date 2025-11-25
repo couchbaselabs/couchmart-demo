@@ -1,0 +1,4 @@
+couchbase>=4.4.0
+tornado
+twisted
+flask

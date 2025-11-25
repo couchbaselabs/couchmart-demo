@@ -10,12 +10,12 @@ represent Couchbase best practices.
 
 ### Initial Setup
 
-1. [Install and setup](https://developer.couchbase.com/documentation/server/5.0/install/install-intro.html) Couchbase Server 5.0+ on your nodes.
+1. [Install and setup](https://developer.couchbase.com/documentation/server/5.0/install/install-intro.html) Couchbase Server 6.7+ on your nodes.
 
-2. Install `couchbase` and `tornado` python modules. e.g:
+2. Install needed python modules. e.g:
 
     ```
-    pip install couchbase tornado
+    pip install --no-cache-dir -r requirements.txt
     ```
     
 3. Adjust `settings.py` to point towards the servers/users/buckets that you 
