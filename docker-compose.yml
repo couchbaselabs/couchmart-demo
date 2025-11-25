@@ -1,0 +1,39 @@
+services:
+  couchbase:
+    image: couchbase:7.6.5
+    ports:
+      - 8091-8094:8091-8094
+      - 11210:11210
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8091/ui/index.html"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 1048576
+        hard: 1048576
+    volumes:
+      - ./data:/opt/couchbase/var
+
+  web:
+    build: .
+    container_name: couchmart-web
+    depends_on:
+      couchbase:
+        condition: service_healthy
+#    command: ["python", "create_dataset.py"]
+    environment:
+      - AWS_NODES=couchbase
+      - USERNAME=Administrator
+      - PASSWORD=password
+      - ADMIN_USER=Administrator
+      - ADMIN_PASS=password
+      - BUCKET_NAME=couchmart
+      - DDOC_NAME=orders
+      - VIEW_NAME=by_timestamp
+    ports:
+      - 8888:8888
+    volumes:
+      - .:/app
