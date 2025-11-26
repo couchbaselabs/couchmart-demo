@@ -10,7 +10,7 @@ represent Couchbase best practices.
 
 ### Initial Setup
 
-1. [Install and setup](https://developer.couchbase.com/documentation/server/5.0/install/install-intro.html) Couchbase Server 6.7+ on your nodes.
+1. [Install and setup](https://docs.couchbase.com/server/7.6/getting-started/do-a-quick-install.html) Couchbase Server 7.6+ on your nodes.
 
 2. Install needed python modules. e.g:
 
@@ -45,6 +45,15 @@ documents:
 `/nodes` and the latest orders can be found at `/query_vis.html`. Note that the
 node visualiser has been orchestrated specifically for the demo and may not 
 display the correct output in all cases.
+
+### Debugging
+
+To enable verbose debug logging (including connection details and ping results), set the environment variable `DEBUG_LOGS=true`.
+
+```bash
+export DEBUG_LOGS=true
+python web-server.py
+```
 
 ### Query Setup
 

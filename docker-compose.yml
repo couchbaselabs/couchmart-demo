@@ -19,6 +19,7 @@ services:
 
   web:
     build: .
+    # image: tayebchlyah/couchmart:4.5
     container_name: couchmart-web
     depends_on:
       couchbase:
@@ -33,7 +34,9 @@ services:
       - BUCKET_NAME=couchmart
       - DDOC_NAME=orders
       - VIEW_NAME=by_timestamp
+#      - DEBUG_LOGS=true
     ports:
       - 8888:8888
-    volumes:
-      - .:/app
+    # To avoid rebuilding the app in each change
+#    volumes:
+#      - .:/app

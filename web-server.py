@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+import os
+
 import asyncio
 import datetime
 import time
@@ -162,6 +164,8 @@ def update_cb_status():
         xdcr_enabled = yield cb_status.xdcr_enabled()
         fts_nodes = yield cb_status.fts_nodes()
         fts_enabled = yield cb_status.fts_enabled()
+        if os.environ.get('DEBUG_LOGS') == 'true':
+            print(f"Status Update - FTS Enabled: {fts_enabled}, N1QL Enabled: {n1ql_enabled}, XDCR Enabled: {xdcr_enabled}")
         yield tornado.gen.sleep(0.5)
 
 

@@ -1,9 +1,10 @@
 #!/usr/bin/env - python
-
+import os
 import tornado.escape
 import tornado.gen
 import tornado.httpclient
 from tornado.httpclient import AsyncHTTPClient, HTTPRequest
+from couchbase.diagnostics import ServiceType
 
 import settings
 from cb_connection import cluster
@@ -22,10 +23,19 @@ aws = settings.AWS
 http_client = AsyncHTTPClient()
 ping_result = cluster.ping()
 server_nodes = []
+
+if os.environ.get('DEBUG_LOGS') == 'true':
+    print(f"DEBUG: Ping result: {ping_result.endpoints}")
+
 for endpoint, reports in ping_result.endpoints.items():
-    for report in reports:
-        if ':8091' in report.remote:
+    if endpoint == ServiceType.Management:
+        for report in reports:
             server_nodes.append(report.remote)
+
+if os.environ.get('DEBUG_LOGS') == 'true':
+    print(f"DEBUG: Server nodes: {server_nodes}")
+    if not server_nodes:
+        print("WARNING: No server nodes found! 'get_url' might hang.")
 
 
 def get_image_for_product(product):
@@ -130,14 +140,24 @@ def fts_nodes():
 def fts_enabled():
     nodes_to_query = yield fts_nodes()
     # Replace port 8091 with 8094 for FTS queries
-    nodes_to_query = [node.replace(':8091', ':8094') for node in nodes_to_query]
+    nodes_to_query = [
+        node.replace(':8091', ':8094') if ':8091' in node else node + ':8094'
+        for node in nodes_to_query
+    ]
+    if os.environ.get('DEBUG_LOGS') == 'true':
+        print(f"DEBUG: FTS nodes to query: {nodes_to_query}")
+        print(f"DEBUG: FTS_URL: {FTS_URL}")
     if not nodes_to_query:
         raise tornado.gen.Return(False)
 
     try:
-        yield get_url(FTS_URL, host_list=nodes_to_query,
+        result = yield get_url(FTS_URL, host_list=nodes_to_query,
                       raise_exception=True)
-    except Exception:
+        if os.environ.get('DEBUG_LOGS') == 'true':
+            print(f"DEBUG: FTS query succeeded: {result}")
+    except Exception as e:
+        if os.environ.get('DEBUG_LOGS') == 'true':
+            print(f"DEBUG: FTS query failed: {e}")
         raise tornado.gen.Return(False)
     else:
         raise tornado.gen.Return(True)
