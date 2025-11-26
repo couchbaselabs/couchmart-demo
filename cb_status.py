@@ -6,7 +6,7 @@ import tornado.httpclient
 from tornado.httpclient import AsyncHTTPClient, HTTPRequest
 from couchbase.diagnostics import ServiceType
 
-import settings
+import config as settings
 from cb_connection import cluster
 from create_dataset import PRODUCTS as PRODUCTS
 

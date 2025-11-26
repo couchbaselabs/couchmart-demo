@@ -7,7 +7,7 @@ from couchbase.cluster import Cluster
 from couchbase.options import (ClusterOptions, ClusterTimeoutOptions,
                                QueryOptions)
 
-import settings
+import config as settings
 
 # Update this to your cluster
 bucket_name = settings.BUCKET_NAME

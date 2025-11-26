@@ -23,7 +23,7 @@ from couchbase.options import (ClusterOptions, ClusterTimeoutOptions,
 from couchbase.views import ViewOrdering
 
 import cb_status
-import settings
+import config as settings
 
 socket_list = []
 bucket_name = settings.BUCKET_NAME
