@@ -1,38 +1,41 @@
 #!/usr/bin/env - python
-
+import os
 import tornado.escape
 import tornado.gen
 import tornado.httpclient
 from tornado.httpclient import AsyncHTTPClient, HTTPRequest
-from txcouchbase.bucket import Bucket
+from couchbase.diagnostics import ServiceType
 
-import settings
+import config as settings
+from cb_connection import cluster
 from create_dataset import PRODUCTS as PRODUCTS
-
-if settings.AWS:
-    BOOTSTRAP_NODES = settings.AWS_NODES
-else:
-    BOOTSTRAP_NODES = settings.AZURE_NODES
 
 BUCKET_URL = "/pools/default/buckets"
 NODE_URL = "/pools/default/serverGroups"
 INDEX_URL = "/indexStatus"
 SERVICE_URL = "/pools/default/nodeServices"
-FTS_URL = "/api/index/English"
+FTS_URL = "/api/index/couchmart._default.English"
 XDCR_URL = "/pools/default/remoteClusters"
 USERNAME = settings.ADMIN_USER
 PASSWORD = settings.ADMIN_PASS
 
-bucket_name = settings.BUCKET_NAME
-user = settings.USERNAME
-password = settings.PASSWORD
-
 aws = settings.AWS
-bucket = Bucket('couchbase://{0}/{1}'.format(",".join(BOOTSTRAP_NODES),
-                                             bucket_name),
-                username=user,
-                password=password)
 http_client = AsyncHTTPClient()
+ping_result = cluster.ping()
+server_nodes = []
+
+if os.environ.get('DEBUG_LOGS') == 'true':
+    print(f"DEBUG: Ping result: {ping_result.endpoints}")
+
+for endpoint, reports in ping_result.endpoints.items():
+    if endpoint == ServiceType.Management:
+        for report in reports:
+            server_nodes.append(report.remote)
+
+if os.environ.get('DEBUG_LOGS') == 'true':
+    print(f"DEBUG: Server nodes: {server_nodes}")
+    if not server_nodes:
+        print("WARNING: No server nodes found! 'get_url' might hang.")
 
 
 def get_image_for_product(product):
@@ -43,7 +46,7 @@ def get_image_for_product(product):
 
 
 @tornado.gen.coroutine
-def get_url(endpoint, host_list=bucket.server_nodes, raise_exception=False):
+def get_url(endpoint, host_list=server_nodes, raise_exception=False):
     exceptions = []
     while True:
         for host in host_list:
@@ -58,7 +61,7 @@ def get_url(endpoint, host_list=bucket.server_nodes, raise_exception=False):
                 response = yield http_client.fetch(request)
                 raise tornado.gen.Return((tornado.escape.json_decode(response.body), host))
             except tornado.httpclient.HTTPError as e:
-                print ("Could not retrieve URL: " + str(target_url) + str(e))
+                print("Could not retrieve URL: " + str(target_url) + str(e))
                 exceptions.append(e)
 
         if exceptions == len(host_list) and raise_exception:
@@ -74,7 +77,7 @@ def get_url(endpoint, host_list=bucket.server_nodes, raise_exception=False):
 def get_node_status():
     default_status = {"hostname": "n/a", "ops": 0, "status": "out"}
 
-    node_list = [dict(default_status) for _ in xrange(5)]
+    node_list = [dict(default_status) for _ in range(5)]
     if not aws:
         node_list[0]['ops'] = 400
         raise tornado.gen.Return(node_list)
@@ -102,14 +105,14 @@ def get_node_status():
         # Check for cluster members that are unhealthy (in risk of being failed)
         # We will highlight these with a red border
         elif node_info['clusterMembership'] == "active" and \
-                        node_info['status'] == "unhealthy":
+                node_info['status'] == "unhealthy":
             node_list[index]['status'] = "trouble"
         # Then, nodes that are either failed over, warming up or not rebalanced in
         # These will appear as faded
         elif node_info['clusterMembership'] == "inactiveFailed" or \
-                        node_info['clusterMembership'] == "inactiveAdded" or \
+                node_info['clusterMembership'] == "inactiveAdded" or \
                 (node_info['clusterMembership'] == "active" and
-                         node_info['status'] == "warmup"):
+                 node_info['status'] == "warmup"):
             node_list[index]['status'] = "dormant"
         # Any other status we'll just hide
         else:
@@ -124,7 +127,9 @@ def fts_nodes():
     for node_info in response["nodesExt"]:
         if 'fts' in node_info['services']:
             if 'thisNode' in node_info and node_info['thisNode']:
-                fts_nodes.append(node)
+                # node comes from get_url and has 'http://' prefix, strip it
+                hostname = node.replace('http://', '')
+                fts_nodes.append(hostname)
             else:
                 fts_nodes.append(node_info['hostname'])
 
@@ -134,14 +139,25 @@ def fts_nodes():
 @tornado.gen.coroutine
 def fts_enabled():
     nodes_to_query = yield fts_nodes()
-    nodes_to_query = ["{}:8094".format(node) for node in nodes_to_query]
+    # Replace port 8091 with 8094 for FTS queries
+    nodes_to_query = [
+        node.replace(':8091', ':8094') if ':8091' in node else node + ':8094'
+        for node in nodes_to_query
+    ]
+    if os.environ.get('DEBUG_LOGS') == 'true':
+        print(f"DEBUG: FTS nodes to query: {nodes_to_query}")
+        print(f"DEBUG: FTS_URL: {FTS_URL}")
     if not nodes_to_query:
         raise tornado.gen.Return(False)
 
     try:
-        yield get_url(FTS_URL, host_list=nodes_to_query,
+        result = yield get_url(FTS_URL, host_list=nodes_to_query,
                       raise_exception=True)
-    except Exception:
+        if os.environ.get('DEBUG_LOGS') == 'true':
+            print(f"DEBUG: FTS query succeeded: {result}")
+    except Exception as e:
+        if os.environ.get('DEBUG_LOGS') == 'true':
+            print(f"DEBUG: FTS query failed: {e}")
         raise tornado.gen.Return(False)
     else:
         raise tornado.gen.Return(True)

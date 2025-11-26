@@ -6,21 +6,50 @@ This is the code for the live demo at Couchbase Connect EU -
 This code was created purely for demo purposes and does not necessarily
 represent Couchbase best practices.
 
+## Docker Compose
+
+To start the application and Couchbase Server using Docker Compose:
+
+```bash
+docker-compose up -d
+```
+
+This will start:
+- Couchbase Server (available at http://localhost:8091)
+- The Web Application (available at http://localhost:8888)
+
 ## Website Setup
 
 ### Initial Setup
 
-1. [Install and setup](https://developer.couchbase.com/documentation/server/5.0/install/install-intro.html) Couchbase Server 5.0+ on your nodes.
+1. [Install and setup](https://docs.couchbase.com/server/7.6/getting-started/do-a-quick-install.html) Couchbase Server 7.6+ on your nodes.
 
-2. Install `couchbase` and `tornado` python modules. e.g:
+2. Install needed python modules. e.g:
 
     ```
-    pip install couchbase tornado
+    pip install --no-cache-dir -r requirements.txt
     ```
     
 3. Adjust `settings.py` to point towards the servers/users/buckets that you 
 are using for
 'aws' and 'azure'. If not using XDCR, you can just point towards one cluster.
+
+### Configuration
+
+You can configure the application using environment variables. These will override the defaults in `settings.py`.
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `BUCKET_NAME` | `couchmart` | Name of the Couchbase bucket |
+| `AWS_NODES` | `couchbase` | Comma-separated list of Couchbase nodes |
+| `AWS` | `True` | Set to `True` if running on AWS (or local/K8s) |
+| `USERNAME` | `Administrator` | Data user username |
+| `PASSWORD` | `password` | Data user password |
+| `ADMIN_USER` | `Administrator` | Admin username |
+| `ADMIN_PASS` | `password` | Admin password |
+| `DDOC_NAME` | `orders` | Design document name |
+| `VIEW_NAME` | `by_timestamp` | View name |
+| `DEBUG_LOGS` | `None` | Set to `true` to enable verbose debug logging |
 
 4. Create the appropriate bucket on your server, ensuring that a user is created
 with full access to that bucket.
@@ -45,6 +74,15 @@ documents:
 `/nodes` and the latest orders can be found at `/query_vis.html`. Note that the
 node visualiser has been orchestrated specifically for the demo and may not 
 display the correct output in all cases.
+
+### Debugging
+
+To enable verbose debug logging (including connection details and ping results), set the environment variable `DEBUG_LOGS=true`.
+
+```bash
+export DEBUG_LOGS=true
+python web-server.py
+```
 
 ### Query Setup
 

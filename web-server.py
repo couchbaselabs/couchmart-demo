@@ -1,40 +1,50 @@
 #!/usr/bin/env python
-from collections import deque
-import datetime
-import random
-import time
-import urllib
+import os
 
-import tornado.gen
+import asyncio
+import datetime
+import time
+from collections import deque
+from datetime import timedelta
+from urllib.parse import quote
+
+import couchbase.search as search
 import tornado.escape
+import tornado.gen
 import tornado.ioloop
 import tornado.web
 import tornado.websocket
-import tornado.platform.twisted
-from tornado.httpclient import AsyncHTTPClient, HTTPRequest
-
-#install this before importing anything else, or VERY BAD THINGS happen
-tornado.platform.twisted.install()
-
-from txcouchbase.bucket import Bucket
+from acouchbase.cluster import Cluster
+from couchbase.auth import PasswordAuthenticator
+from couchbase.exceptions import CouchbaseException
+from couchbase.management.views import DesignDocumentNamespace
+from couchbase.options import (ClusterOptions, ClusterTimeoutOptions,
+                               GetOptions, ViewOptions, SearchOptions)
+from couchbase.views import ViewOrdering
 
 import cb_status
-import settings
-
+import config as settings
 
 socket_list = []
 bucket_name = settings.BUCKET_NAME
 user = settings.USERNAME
 password = settings.PASSWORD
 nodes = ','.join(settings.AWS_NODES)
+cb_cluster = None
+cb_bucket = None
+cb_default_scope = None
+cb_default_collection = None
+live_order_callback = None
 
-bucket = Bucket('couchbase://{0}/{1}'.format(nodes, bucket_name),
-                username=user, password=password)
 fts_nodes = None
 fts_enabled = False
 nodes = []
 n1ql_enabled = False
 xdcr_enabled = False
+
+RECENT_ORDERS = deque(maxlen=50)
+NEXT_CUSTOMER = 0
+LATEST_TS = None
 
 
 class NodeStatusHandler(tornado.web.RequestHandler):
@@ -44,7 +54,7 @@ class NodeStatusHandler(tornado.web.RequestHandler):
 
 class CBStatusWebSocket(tornado.websocket.WebSocketHandler):
     def open(self):
-        print self
+        print(self)
         if self not in socket_list:
             socket_list.append(self)
             self.red = 255
@@ -55,7 +65,7 @@ class CBStatusWebSocket(tornado.websocket.WebSocketHandler):
             self.get_node_status()
 
     def on_message(self, message):
-        print "on_message received:" + message
+        print("on_message received:" + message)
 
     def on_close(self):
         print("WebSocket closed")
@@ -69,59 +79,28 @@ class CBStatusWebSocket(tornado.websocket.WebSocketHandler):
 
 class LiveOrdersWebSocket(tornado.websocket.WebSocketHandler):
     def open(self):
-        self.RECENT_ORDERS = deque(maxlen=50)
-        self.NEXT_CUSTOMER = 0
-        self.LATEST_TS = 0
         if self not in socket_list:
             socket_list.append(self)
             print("WebSocket opened")
-            self.callback = tornado.ioloop.PeriodicCallback(self.send_orders,
-                                                            5000)
-            self.callback.start()
 
     def on_message(self, message):
-        print "on_message received:" + message
+        print("on_message received:" + message)
 
     def on_close(self):
         print("WebSocket closed")
-        self.callback.stop()
-
-    @tornado.gen.coroutine
-    def send_orders(self):
-        res = yield bucket.queryAll(settings.DDOC_NAME, settings.VIEW_NAME,
-                                    include_docs=True, descending=False, limit=50,
-                                    startkey=self.LATEST_TS, stale=False)
-        new_order = False
-        for order in res:
-            new_order = True
-            self.RECENT_ORDERS.appendleft(order.doc.value)
-            print order.key, order.doc.value['name']
-
-        if new_order:
-            self.NEXT_CUSTOMER = 0  # back to the start
-            self.LATEST_TS = self.RECENT_ORDERS[0]['ts'] + 1
-        elif self.NEXT_CUSTOMER >= (len(self.RECENT_ORDERS) - 1):
-            self.NEXT_CUSTOMER = 0  # back to the start
-        else:
-            self.NEXT_CUSTOMER += 1
-
-        if len(self.RECENT_ORDERS) > 0:
-            display_order = self.RECENT_ORDERS[self.NEXT_CUSTOMER]
-            msg = {"name": display_order['name'], "images": []}
-            for prod in display_order['order']:
-                msg['images'].append("./img/" + cb_status.get_image_for_product(prod))
-            self.write_message(msg)
-            if display_order['name'] == 'Couchbase Demo Phone' and self.NEXT_CUSTOMER == 0:
-                self.callback.stop()
-                yield tornado.gen.sleep(5)
-                self.callback.start()
+        if live_order_callback is not None:
+            live_order_callback.stop()
 
 
 class ShopHandler(tornado.web.RequestHandler):
-    @tornado.gen.coroutine
-    def get(self):
-        items = yield bucket.get("items")
-        items = yield bucket.get_multi(items.value['items'])
+    async def get(self):
+        items = await cb_default_collection.get("items")
+        # get_multi is not supported in acouchbase
+        # use ascyncio.gather instead
+        coroutines = [cb_default_collection.get(key, GetOptions(timeout=timedelta(seconds=5))) for key in
+                      items.value['items']]
+        items = await asyncio.gather(*coroutines)
+
         self.render("www/shop.html", items=items)
 
 
@@ -136,55 +115,40 @@ class SubmitHandler(tornado.web.RequestHandler):
             self.send_error(400)
             return
 
-        key = "Order::{}::{}".format(data['name'],
-                                     datetime.datetime.utcnow().isoformat())
+        key = "Order::{}::{}".format(data['name'], datetime.datetime.now(datetime.UTC))
         data['ts'] = int(time.time())
         data['type'] = "order"
-        yield bucket.upsert(key, data)
+        yield cb_default_collection.upsert(key, data)
 
 
 class SearchHandler(tornado.web.RequestHandler):
-    http_client = AsyncHTTPClient()
-
-    @tornado.gen.coroutine
-    def get(self):
-
-        if fts_nodes:
+    async def get(self):
+        try:
             query = self.get_query_argument('q')
             query = query.replace('"', r'')
-            query = urllib.quote(query)
+            query = quote(query)
             terms = query.split()
             query = ' '.join(["{}~1".format(term) for term in terms])
-            data = '{"query": {"query": "' + query + '"}, "highlight": null, "fields": null, "facets": null, "explain": false}'
-            fts_node = random.choice(fts_nodes)
-            request = HTTPRequest(
-                url='http://{}:8094/api/index/English/query'.format(fts_node),
-                method='POST', body=data, auth_username=settings.ADMIN_USER,
-                auth_password=settings.ADMIN_PASS, auth_mode='basic',
-                headers={'Content-Type': 'application/json'})
-            response = yield self.http_client.fetch(request)
+            query = search.QueryStringQuery(query)
+            request = search.SearchRequest.create(query)
+            result = cb_default_scope.search('English', request)
+            keys = [row.id async for row in result.rows()]
 
-            response = tornado.escape.json_decode(response.body)
-
-            final_results = []
-            for hit in response['hits']:
-                final_results.append(hit['id'])
-
-            self.write({'keys': final_results})
-        else:
-            raise Exception('No FTS node found')
+            self.write({'keys': keys})
+        except CouchbaseException as ex:
+            import traceback
+            traceback.print_exc()
 
 
 class FilterHandler(tornado.web.RequestHandler):
-    @tornado.gen.coroutine
-    def get(self):
+    async def get(self):
         data = self.get_query_argument('type')
-        results = yield bucket.n1qlQueryAll(
+        results = cb_cluster.query(
             'SELECT meta().id FROM {} WHERE category = "{}"'
             .format(bucket_name, data))
 
         final_results = []
-        for row in results:
+        async for row in results.rows():
             final_results.append(row['id'])
 
         self.write({'keys': final_results})
@@ -200,6 +164,8 @@ def update_cb_status():
         xdcr_enabled = yield cb_status.xdcr_enabled()
         fts_nodes = yield cb_status.fts_nodes()
         fts_enabled = yield cb_status.fts_enabled()
+        if os.environ.get('DEBUG_LOGS') == 'true':
+            print(f"Status Update - FTS Enabled: {fts_enabled}, N1QL Enabled: {n1ql_enabled}, XDCR Enabled: {xdcr_enabled}")
         yield tornado.gen.sleep(0.5)
 
 
@@ -217,10 +183,93 @@ def make_app():
     ], debug=True)
 
 
-if __name__ == "__main__":
-    print "Running at http://localhost:8888"
+async def run_view_query_broadcast():
+    global NEXT_CUSTOMER, LATEST_TS, RECENT_ORDERS
+
+    websocket = None
+    for ws in socket_list:
+        if isinstance(ws, LiveOrdersWebSocket):
+            websocket = ws
+            break
+    if websocket is None:
+        return
+
+    options = ViewOptions(limit=50, order=ViewOrdering.ASCENDING,
+                          namespace=DesignDocumentNamespace.PRODUCTION,
+                          startkey=LATEST_TS)
+    results = cb_bucket.view_query(settings.DDOC_NAME, settings.VIEW_NAME, options)
+    new_order = False
+    order_data = None
+
+    async for order in results:
+        new_order = True
+        if order.document is not None:
+            order_data = order.document
+        else:
+            query_res = await cb_default_collection.get(order.id)
+            order_data = query_res.content_as[dict]
+
+        RECENT_ORDERS.appendleft(order_data)
+        print(order.key, order_data['name'])
+
+    if new_order:
+        NEXT_CUSTOMER = 0  # back to the start
+        LATEST_TS = RECENT_ORDERS[0]['ts'] + 1
+    elif NEXT_CUSTOMER >= (len(RECENT_ORDERS) - 1):
+        NEXT_CUSTOMER = 0  # back to the start
+    else:
+        NEXT_CUSTOMER += 1
+
+    if len(RECENT_ORDERS) > 0:
+        display_order = RECENT_ORDERS[NEXT_CUSTOMER]
+        msg = {"name": display_order['name'], "images": []}
+        for prod in display_order['order']:
+            msg['images'].append("./img/" + cb_status.get_image_for_product(prod))
+
+        await websocket.write_message(msg)
+
+        if display_order['name'] == 'Couchbase Demo Phone' and NEXT_CUSTOMER == 0:
+            live_order_callback.stop()
+            await tornado.gen.sleep(5)
+            live_order_callback.start()
+
+
+async def main():
+    """Initializes services and starts the web server."""
+    global cb_cluster, cb_bucket, cb_default_collection, live_order_callback, cb_default_scope
+
+    # The `Cluster.connect` method is now a coroutine
+    hosts = ','.join(settings.AWS_NODES)
+    conn_str = f"couchbase://{hosts}"
+    auth = PasswordAuthenticator(
+        user,
+        password,
+    )
+    timeout_opts = ClusterTimeoutOptions(connect_timeout=timedelta(seconds=15))
+    cb_cluster = await Cluster.connect(conn_str, ClusterOptions(auth, timeout_options=timeout_opts))
+    # It is recommended to wait for the connection to be ready
+    await cb_cluster.wait_until_ready(timedelta(seconds=15))
+
+    cb_bucket = cb_cluster.bucket(bucket_name)
+    cb_default_collection = cb_bucket.default_collection()
+    cb_default_scope = cb_bucket.default_scope()
+
     app = make_app()
     app.listen(8888)
+    print("Server started on http://localhost:8888")
 
     tornado.ioloop.IOLoop.current().spawn_callback(update_cb_status)
-    tornado.ioloop.IOLoop.current().start()
+    live_order_callback = tornado.ioloop.PeriodicCallback(run_view_query_broadcast, timedelta(seconds=5))
+    live_order_callback.start()
+
+    # Keep the application running
+    await asyncio.Event().wait()
+
+
+if __name__ == "__main__":
+    try:
+        asyncio.run(main())
+        tornado.ioloop.IOLoop.current().start()
+    except KeyboardInterrupt:
+        tornado.ioloop.IOLoop.current().stop()
+        print("\nServer shutting down.")
